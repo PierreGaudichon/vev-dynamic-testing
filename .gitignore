@@ -1,1 +1,6 @@
 target/
+
+# File for IntelliJ
+.idea/
+src/main/main.iml
+src/test/test.iml
