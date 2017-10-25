@@ -1,4 +1,4 @@
-package istic.fr.Prog_test;
+package istic.fr.prog_test;
 
 public class Point {
 	
@@ -27,8 +27,8 @@ public class Point {
 	
 	public double distance(Point p) {
 		
-		double v1 = Math.pow((p.getX()-this.x),2);
-		double v2 = Math.pow((p.getY()-this.y),2);
+		double v1 = Math.pow((p.getX()-getX()),2);
+		double v2 = Math.pow((p.getY()-getY()),2);
 		
 		double ret = Math.sqrt(v1+v2);
 		

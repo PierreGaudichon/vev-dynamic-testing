@@ -1,8 +1,8 @@
-package istic.fr.Prog_test;
+package istic.fr.prog_test;
 
 import junit.framework.*;
 
-public class Point_test extends TestCase{
+public class PointTest extends TestCase{
 	
 	public void testConstructor() throws Exception {
 
@@ -38,7 +38,7 @@ public class Point_test extends TestCase{
 		double test = p1.distance(p2);
 		
 		// on test avec la valeur qu'on devrait trouver
-		assertEquals(Math.sqrt(4),test);
+		assertEquals((double) 2,test);
 	}
 
 }
