@@ -1,15 +1,11 @@
 package istic.fr.vev_dynamic_testing;
 
-import javassist.CannotCompileException;
 import javassist.ClassPool;
-import javassist.Loader;
+import javassist.CtClass;
 import javassist.NotFoundException;
-import javassist.Translator;
 
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
-
-import istic.fr.prog_test.*;
 
 /**
  * Hello world!
@@ -17,18 +13,20 @@ import istic.fr.prog_test.*;
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws NotFoundException
     {
     	// first step : modify the Junit code
+    	ClassPool pool = ClassPool.getDefault();
+    	CtClass cc = pool.get("src.test.resources.prog_test.PointTest");
     	
     	// second step : run Junit
-    	runningStation();
+    	runningStation(cc);
     	 
     }
     
-    public static void runningStation() {
+    public static void runningStation(CtClass cc) {
   	    JUnitCore runner = new JUnitCore();
   	    runner.addListener(new TextListener(System.out));
-  	    runner.run(PointTest.class);
+  	    runner.run(cc.getClass());
   	}
 }
