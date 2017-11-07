@@ -7,6 +7,13 @@ VEV - Dynamic testing
 - Timothée Merlet-Thomazeau
 
 
+## Deadlines
+
+- November the 22nd 23:59 : Mi session deadline
+- November the 29th 23:59 : Mostly finished deadline
+- December the 22nd 23:59 : Final dealine
+
+
 ## Links
 
 - [Sujet](https://github.com/Software-Testing/Project-2017-2018)
