@@ -28,3 +28,16 @@ VEV - Dynamic testing
 
     mvn clean install
     java -javaagent:target/vev-dynamic-testing-0.0.1-SNAPSHOT.jar -jar target/vev-dynamic-testing-0.0.1-SNAPSHOT.jar
+
+
+## Plan
+
+- Compiler le projet ressource
+  + projet maven  
+  + hors de java
+- Ajouter des logs a chaque endroit important
+  + branche, class, methode, ...
+  + Noter précisement l'endroit des logs.
+- Lire les logs pour générer un rapport
+  + code coverage (par projet, classe, méthode)
+  + Compter le nombre d'éxecution de chaque ligne de code
