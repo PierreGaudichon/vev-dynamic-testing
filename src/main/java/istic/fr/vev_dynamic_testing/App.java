@@ -34,7 +34,8 @@ public class App {
     {
     	// first step : modify the Junit code
     	ClassPool pool = ClassPool.getDefault();
-    	CtClass cc = pool.get("src.test.resources.prog_test.PointTest");
+    	pool.appendClassPath("src/test/resources/Test1/target/test-classes/istic/fr/prog_test");
+    	CtClass cc = pool.get("PointTest");
 
     	// second step : run Junit
     	runningStation(cc);
