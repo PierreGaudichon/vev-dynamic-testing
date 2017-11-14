@@ -33,8 +33,9 @@ VEV - Dynamic testing
 ## Plan
 
 - Compiler le projet ressource
-  + projet maven  
-  + hors de java
+  + projet maven
+  + compiler le projet programmatiquement ?
+  + exécuter les tests programmatiquement ?
 - Ajouter des logs a chaque endroit important
   + branche, class, methode, ...
   + Noter précisement l'endroit des logs.
