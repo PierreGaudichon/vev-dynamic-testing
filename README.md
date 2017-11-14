@@ -28,3 +28,8 @@ VEV - Dynamic testing
 
     mvn clean install
     java -javaagent:target/vev-dynamic-testing-0.0.1-SNAPSHOT.jar -jar target/vev-dynamic-testing-0.0.1-SNAPSHOT.jar
+
+## javac
+
+javac -cp junit-4.4.jar PointTest.java Point.java
+avoir Junit-4.4.jar dans le dossier
