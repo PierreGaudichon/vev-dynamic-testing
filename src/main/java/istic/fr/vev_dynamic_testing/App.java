@@ -1,12 +1,7 @@
 package istic.fr.vev_dynamic_testing;
 
 
-import java.io.IOException;
-
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
-
+import javassist.*;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 
@@ -40,7 +35,7 @@ public class App {
     	// first step : modify the Junit code
     	ClassPool pool = ClassPool.getDefault();
     	CtClass cc = pool.get("src.test.resources.prog_test.PointTest");
-    	
+
     	// second step : run Junit
     	runningStation(cc);
     	 
