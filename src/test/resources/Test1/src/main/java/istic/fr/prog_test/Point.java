@@ -34,6 +34,14 @@ public class Point {
 		
 		return ret;
 	}
+
+	public boolean isOrigin() {
+		if((getX() == 0) && (getY() == 0)) {
+			return true;
+		} else { // The goal of this ugliness is to introduce a branch in the code.
+			return false;
+		}
+	}
 	
 
 }
