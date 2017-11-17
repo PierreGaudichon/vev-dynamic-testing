@@ -2,10 +2,15 @@ package istic.fr.vev_dynamic_testing;
 
 
 import javassist.*;
+import javassist.bytecode.BadBytecode;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.Mnemonic;
+import javassist.bytecode.analysis.ControlFlow;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import sun.management.MethodInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -62,11 +68,34 @@ public class App {
         return "System.out.println(\""+log+"\");";
     }
 
+    public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
+        behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
+    }
+
     public static void addCallingName(String type, CtBehavior behavior) {
         try {
-            behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
+            addCallingNameUnsafe(type, behavior);
         } catch (CannotCompileException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void inspectMethodUnsafe(CtMethod method) throws BadBytecode {
+        System.out.println("---");
+        ControlFlow cf = new ControlFlow(method);
+        Arrays.asList(cf.basicBlocks()).forEach(block -> {
+            System.out.println(block.toString());
+            for (int i = 0; i < block.exits(); i++) {
+                //block.ex
+            }
+        });
+    }
+
+    public static void inspectMethod(CtMethod method) {
+        try {
+            inspectMethodUnsafe(method);
+        } catch (BadBytecode badBytecode) {
+            badBytecode.printStackTrace();
         }
     }
 
@@ -74,10 +103,28 @@ public class App {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
         CtClass cc = pool.get(MAIN_CLASS);
-        Arrays.asList(cc.getConstructors())
-                .forEach(constructor -> addCallingName("constructor", constructor));
+        List<javassist.bytecode.MethodInfo> methods = cc.getClassFile().getMethods();
+        methods.forEach(method -> {
+            //System.out.println("---");
+            CodeIterator iterator = method.getCodeAttribute().iterator();
+            while(iterator.hasNext()) {
+                int index = 0;
+                try {
+                    index = iterator.next();
+                } catch (BadBytecode badBytecode) {
+                    badBytecode.printStackTrace();
+                }
+                int op = iterator.byteAt(index);
+                //System.out.println(Mnemonic.OPCODE[op]);
+            }
+        });
+        //Arrays.asList(cc.getConstructors())
+        //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
-                .forEach(method -> addCallingName("method", method));
+                .forEach((CtMethod method) -> {
+                    inspectMethod(method);
+                    //addCallingName("method", method);
+                });
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
 
