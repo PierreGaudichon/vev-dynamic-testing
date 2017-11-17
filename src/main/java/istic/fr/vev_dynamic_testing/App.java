@@ -54,22 +54,30 @@ public class App {
 
     public static void runTest(Class cc) {
         JUnitCore runner = new JUnitCore();
-        runner.addListener(new TextListener(System.out));
+        //runner.addListener(new TextListener(System.out));
         runner.run(cc);
+    }
+
+    public static String sop(String log) {
+        return "System.out.println(\""+log+"\");";
+    }
+
+    public static void addCallingName(String type, CtBehavior behavior) {
+        try {
+            behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
         CtClass cc = pool.get(MAIN_CLASS);
-        Arrays.asList(cc.getDeclaredMethods()).forEach(method -> {
-            try {
-                method.insertBefore("System.out.println(\"LOL\");");
-                method.
-            } catch (CannotCompileException e) {
-                e.printStackTrace();
-            }
-        });
+        Arrays.asList(cc.getConstructors())
+                .forEach(constructor -> addCallingName("constructor", constructor));
+        Arrays.asList(cc.getDeclaredMethods())
+                .forEach(method -> addCallingName("method", method));
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
 
