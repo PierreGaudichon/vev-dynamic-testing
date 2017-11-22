@@ -86,10 +86,14 @@ public class App {
         Arrays.asList(cf.basicBlocks()).forEach(block -> {
             System.out.println(block.toString());
             for (int i = 0; i < block.exits(); i++) {
-                //block.ex
+
             }
         });
     }
+
+    /*public static void inspectMethodUnsafe(CtMethod method) {
+        method.getBody
+    }*/
 
     public static void inspectMethod(CtMethod method) {
         try {
@@ -98,6 +102,11 @@ public class App {
             badBytecode.printStackTrace();
         }
     }
+
+    private static void wrapMethod(CtMethod method) {
+        
+    }
+
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
@@ -122,11 +131,13 @@ public class App {
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
+                    wrapMethod(method);
                     inspectMethod(method);
                     //addCallingName("method", method);
                 });
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
+
 
     public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException {
     	// first step : modify the class byte-code
