@@ -5,7 +5,7 @@ VEV - Dynamic testing
 
 - Pierre Gaudichon
 - Timothée Merlet-Thomazeau
-- Ahmed
+- Ahmed Nomane
 
 
 ## Deadlines
@@ -28,26 +28,32 @@ VEV - Dynamic testing
 
 ## Build
 
-    mvn clean install
+Il faut recompiler le projet de teste avant chaque lancement du programme :
+
+    ./build_test_project.sh
+
+Lancer le projet avec IntelliJ (la compilation avec maven ne marche pas).
+    
+Lancer les tests du projet (sans lancer les tests du projet ressource) :
+
+    mvn clean -Dtest=AppTest test
 
 
 ## Plan
 
 - Compiler le projet ressource
-  + projet maven
+  + projet maven -> Ok, prototype
   + compiler le projet programmatiquement ? -> pour l'instant script bash
   + exécuter les tests programmatiquement ? -> fait
 - Ajouter des logs a chaque endroit important
-  + branche, class, methode, ... -> que debut methode
+  + method -> fait
+  + block -> en cours
+  + constructor -> fait
+  + Faire un meilleur logger, pas System.out.println -> en cours
   + Noter précisement l'endroit des logs.
 - Lire les logs pour générer un rapport
   + code coverage (par projet, classe, méthode)
   + Compter le nombre d'éxecution de chaque ligne de code
-
-
-## javac
-
-    ./build_test_project.sh
 
 
 ## Problème

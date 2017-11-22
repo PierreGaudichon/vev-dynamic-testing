@@ -3,7 +3,7 @@ package istic.fr.prog_test;
 import junit.framework.*;
 import org.junit.Test;
 
-public class PointTest extends TestCase{
+public class PointTest extends TestCase {
 
 	public void testConstructor() throws Exception {
 		// on initialise les points
