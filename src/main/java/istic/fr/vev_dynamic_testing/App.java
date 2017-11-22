@@ -31,6 +31,8 @@ public class App {
     public final static String TEST_PROJECT = "src/test/resources/Test1";
     public final static String TEST_CLASS = "istic.fr.prog_test.PointTest";
     public final static String MAIN_CLASS = "istic.fr.prog_test.Point";
+    
+    private static CtClass logs = null;
 
     private static class MyTranslator implements Translator {
         public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
@@ -63,12 +65,17 @@ public class App {
         //runner.addListener(new TextListener(System.out));
         runner.run(cc);
     }
-
+    
     public static String sop(String log) {
-        return "System.out.println(\""+log+"\");";
+    	
+    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
+    	System.out.println(ret);
+    	
+    	return ret;
     }
 
     public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
+    	behavior.addLocalVariable("logs", logs);
         behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
     }
 
@@ -111,6 +118,13 @@ public class App {
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
+        
+        // on compile la classe log dans le projet à tester
+        // et on ajoute l'import pour pouvoir l'utiliser dans les tests
+        logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
+    	logs.writeFile(TEST_PROJECT+"/target/classes");
+    	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
+        
         CtClass cc = pool.get(MAIN_CLASS);
         List<javassist.bytecode.MethodInfo> methods = cc.getClassFile().getMethods();
         methods.forEach(method -> {
@@ -131,9 +145,9 @@ public class App {
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
-                    wrapMethod(method);
-                    inspectMethod(method);
-                    //addCallingName("method", method);
+                    //wrapMethod(method);
+                    //inspectMethod(method);
+                    addCallingName("method", method);
                 });
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
@@ -145,6 +159,11 @@ public class App {
         //On lance JUnit sur la class de test
         runTest(testProjectLoader().loadClass(TEST_CLASS));
         System.out.println("Done.");
+        
+        // on récupère les logs de l'exécution
+        // et on les affiche
+        Logs l = Logs.getInstance();
+        System.out.println(l.getResultat());
     }
 
 }
