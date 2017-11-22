@@ -32,9 +32,7 @@ Il faut recompiler le projet de teste avant chaque lancement du programme :
 
     ./build_test_project.sh
 
-Lancer le projet avec IntelliJ, ou :
-
-    mvn clean install
+Lancer le projet avec IntelliJ (la compilation avec maven ne marche pas).
     
 Lancer les tests du projet (sans lancer les tests du projet ressource) :
 

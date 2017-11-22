@@ -32,4 +32,15 @@
 
   </dependencies>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/test</directory>
+        <excludes>
+          <exclude>ressources</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+
 </project>
