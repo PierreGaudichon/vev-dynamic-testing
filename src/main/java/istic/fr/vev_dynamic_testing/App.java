@@ -2,15 +2,12 @@ package istic.fr.vev_dynamic_testing;
 
 
 import javassist.*;
-import javassist.bytecode.BadBytecode;
-import javassist.bytecode.CodeIterator;
-import javassist.bytecode.Mnemonic;
+import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-import sun.management.MethodInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +57,7 @@ public class App {
 
     public static void runTest(Class cc) {
         JUnitCore runner = new JUnitCore();
-        //runner.addListener(new TextListener(System.out));
+        runner.addListener(new TextListener(System.out));
         runner.run(cc);
     }
 
@@ -80,31 +77,53 @@ public class App {
         }
     }
 
-    public static void inspectMethodUnsafe(CtMethod method) throws BadBytecode {
-        System.out.println("---");
-        ControlFlow cf = new ControlFlow(method);
-        Arrays.asList(cf.basicBlocks()).forEach(block -> {
-            System.out.println(block.toString());
-            for (int i = 0; i < block.exits(); i++) {
-
-            }
-        });
-    }
-
-    /*public static void inspectMethodUnsafe(CtMethod method) {
-        method.getBody
-    }*/
-
-    public static void inspectMethod(CtMethod method) {
-        try {
-            inspectMethodUnsafe(method);
-        } catch (BadBytecode badBytecode) {
-            badBytecode.printStackTrace();
+    public static void printDenominatorTreeNodeRec(ControlFlow.Node node, int depth, CodeIterator iterator) {
+        iterator.move(node.block().position());
+        //System.out.println(depth + " : " + node.block().toString());
+        //System.out.println(depth + " : "+node.toString());
+        //System.out.println("    " + Mnemonic.OPCODE[iterator.byteAt(node.block().position())]);
+        for (int i = 0; i < node.children(); i++) {
+            printDenominatorTreeNodeRec(node.child(i), depth+1, iterator);
         }
     }
 
-    private static void wrapMethod(CtMethod method) {
-        
+    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile) throws BadBytecode {
+        //System.out.println("---");
+        ControlFlow cf = new ControlFlow(method);
+        MethodInfo info = classFile.getMethod(method.getName());
+        CodeIterator iterator = info.getCodeAttribute().iterator();
+
+        while(iterator.hasNext()) {
+            int index = 0;
+            try {
+                index = iterator.next();
+            } catch (BadBytecode badBytecode) {
+                badBytecode.printStackTrace();
+            }
+            int op = iterator.byteAt(index);
+            //System.out.println(Mnemonic.OPCODE[op]);
+        }
+
+        printDenominatorTreeNodeRec(cf.dominatorTree()[0], 0, iterator);
+        Arrays.asList(cf.basicBlocks()).forEach(block -> {
+            //System.out.println(block.toString());
+            /*String print = "TRACE block : ("+block.position()+", "+block.length()+")";
+            Bytecode bytes = new Bytecode(classFile.getConstPool());
+            bytes.addPrintln(print);
+            try {
+                iterator.insertAt(block.position(), bytes.get());
+            } catch (BadBytecode badBytecode) {
+                badBytecode.printStackTrace();
+            }*/
+        });
+    }
+
+    public static void inspectMethod(CtMethod method, ClassFile classFile) {
+        try {
+            inspectMethodUnsafe(method, classFile);
+        } catch (BadBytecode badBytecode) {
+            badBytecode.printStackTrace();
+        }
     }
 
 
@@ -112,29 +131,16 @@ public class App {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
         CtClass cc = pool.get(MAIN_CLASS);
-        List<javassist.bytecode.MethodInfo> methods = cc.getClassFile().getMethods();
-        methods.forEach(method -> {
-            //System.out.println("---");
-            CodeIterator iterator = method.getCodeAttribute().iterator();
-            while(iterator.hasNext()) {
-                int index = 0;
-                try {
-                    index = iterator.next();
-                } catch (BadBytecode badBytecode) {
-                    badBytecode.printStackTrace();
-                }
-                int op = iterator.byteAt(index);
-                //System.out.println(Mnemonic.OPCODE[op]);
-            }
-        });
+        ClassFile classFile = cc.getClassFile();
+
         //Arrays.asList(cc.getConstructors())
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
-                    wrapMethod(method);
-                    inspectMethod(method);
+                    inspectMethod(method, classFile);
                     //addCallingName("method", method);
                 });
+
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
 
@@ -143,7 +149,7 @@ public class App {
     	// first step : modify the class byte-code
         modifyMain();
         //On lance JUnit sur la class de test
-        runTest(testProjectLoader().loadClass(TEST_CLASS));
+        //runTest(testProjectLoader().loadClass(TEST_CLASS));
         System.out.println("Done.");
     }
 
