@@ -67,7 +67,6 @@ public class App {
     public static String sop(String log) {
     	
     	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
-    	
     	return ret;
     }
 
@@ -134,7 +133,7 @@ public class App {
         // on compile la classe log dans le projet à tester
         // et on ajoute l'import pour pouvoir l'utiliser dans les tests
         logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
-    	logs.writeFile(TEST_PROJECT+"/target/classes");
+    	//logs.writeFile(TEST_PROJECT+"/target/classes");
     	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
         
         CtClass cc = pool.get(MAIN_CLASS);
@@ -153,15 +152,21 @@ public class App {
 
 
     public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException {
+    	
+    	Logs l = Logs.getInstance();
+    	l.removeLogs();
+    	l.addLogs("start");
+    	
     	// first step : modify the class byte-code
         modifyMain();
         //On lance JUnit sur la class de test
-        //runTest(testProjectLoader().loadClass(TEST_CLASS));
+        runTest(testProjectLoader().loadClass(TEST_CLASS));
         System.out.println("Done.");
         
         // on récupère les logs de l'exécution
         // et on les affiche
-        Logs l = Logs.getInstance();
+        l = Logs.getInstance();
+        l.addLogs("end");
         System.out.println(l.getResultat());
     }
 
