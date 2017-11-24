@@ -16,10 +16,14 @@ public class Logs {
 	/** Point d'accès pour l'instance unique du singleton */
 	public static Logs getInstance()
 	{			
-		if (INSTANCE == null)
-		{ 	INSTANCE = new Logs();	
+		if (INSTANCE == null) {
+			INSTANCE = new Logs();
 		}
 		return INSTANCE;
+	}
+	
+	public void removeLogs() {
+		resultat = "";
 	}
 	
 	public void addLogs(String newLog) {
