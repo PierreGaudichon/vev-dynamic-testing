@@ -98,13 +98,12 @@ public class App {
 
     public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc) throws CompileError {
         String print = "TRACE block : ("+block.position()+", "+block.length()+")";
-        /*Bytecode bytes = new Bytecode(classFile.getConstPool());
-        bytes.addPrintln(print);
-        return bytes;*/
+        // `Javac` is an internal part of Javassist that should probably not be used here.
+        // I couldn't find a way to construct bytecode from string directly from Javassist.
+        // The next three lines do exactly what we want though.
         Javac jv = new Javac(cc);
         jv.compileStmnt("Logs.getInstance().addLogs(\""+print+"\");");
         return jv.getBytecode();
-
     }
 
     public static ControlFlow.Block[] getBasicBlocks(CtMethod method) throws BadBytecode {
