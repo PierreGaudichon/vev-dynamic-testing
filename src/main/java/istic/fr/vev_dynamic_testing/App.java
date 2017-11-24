@@ -4,6 +4,8 @@ package istic.fr.vev_dynamic_testing;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
+import javassist.compiler.CompileError;
+import javassist.compiler.Javac;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -94,34 +96,40 @@ public class App {
         return false;
     }
 
-    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile) {
+    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc) throws CompileError {
         String print = "TRACE block : ("+block.position()+", "+block.length()+")";
-        Bytecode bytes = new Bytecode(classFile.getConstPool());
+        /*Bytecode bytes = new Bytecode(classFile.getConstPool());
         bytes.addPrintln(print);
-        return bytes;
+        return bytes;*/
+        Javac jv = new Javac(cc);
+        jv.compileStmnt("Logs.getInstance().addLogs(\""+print+"\");");
+        return jv.getBytecode();
+
     }
 
     public static ControlFlow.Block[] getBasicBlocks(CtMethod method) throws BadBytecode {
         return new ControlFlow(method).basicBlocks();
     }
 
-    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile) throws BadBytecode {
+    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile, CtClass cc) throws BadBytecode, CompileError {
         //System.out.println("--- " + method.getName());
         MethodInfo info = classFile.getMethod(method.getName());
         CodeIterator iterator = info.getCodeAttribute().iterator();
         for(int i = 0; i < getBasicBlocks(method).length; i++) {
             ControlFlow.Block block = getBasicBlocks(method)[i];
             if(!isIfBLock(block, iterator)) {
-                iterator.insertAt(block.position(), createTraceStatement(block, classFile).get());
+                iterator.insertAt(block.position(), createTraceStatement(block, classFile, cc).get());
             }
         }
     }
 
-    public static void inspectMethod(CtMethod method, ClassFile classFile) {
+    public static void inspectMethod(CtMethod method, ClassFile classFile, CtClass cc) {
         try {
-            inspectMethodUnsafe(method, classFile);
+            inspectMethodUnsafe(method, classFile, cc);
         } catch (BadBytecode badBytecode) {
             badBytecode.printStackTrace();
+        } catch (CompileError compileError) {
+            compileError.printStackTrace();
         }
     }
 
@@ -143,8 +151,8 @@ public class App {
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
+                    inspectMethod(method, classFile, cc);
                     addCallingName("method", method);
-                    inspectMethod(method, classFile);
                 });
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
