@@ -64,7 +64,7 @@ public class App {
         runner.run(cc);
     }
     
-    public static String sop(String log) {
+    public static String addLog(String log) {
     	
     	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
     	return ret;
@@ -72,7 +72,7 @@ public class App {
 
     public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
     	behavior.addLocalVariable("logs", logs);
-        behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
+        behavior.insertBefore(addLog("TRACE "+type+" : "+behavior.getLongName()));
     }
 
     public static void addCallingName(String type, CtBehavior behavior) {
