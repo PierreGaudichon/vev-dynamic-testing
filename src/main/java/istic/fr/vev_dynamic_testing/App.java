@@ -74,7 +74,8 @@ public class App {
 
     public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
     	behavior.addLocalVariable("logs", logs);
-        behavior.insertBefore(addLog("TRACE "+type+" : "+behavior.getLongName()));
+        behavior.insertBefore(addLog("TRACE begin-"+type+" : "+behavior.getLongName()));
+        behavior.insertAfter(addLog("TRACE end-"+type+" : "+behavior.getLongName()));
     }
 
     public static void addCallingName(String type, CtBehavior behavior) {
@@ -96,8 +97,8 @@ public class App {
         return false;
     }
 
-    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc) throws CompileError {
-        String print = "TRACE block : ("+block.position()+", "+block.length()+")";
+    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc, String index) throws CompileError {
+        String print = "TRACE "+index+"-block : ("+block.position()+", "+block.length()+")";
         // `Javac` is an internal part of Javassist that should probably not be used here.
         // I couldn't find a way to construct bytecode from string directly from Javassist.
         // The next three lines do exactly what we want though.
@@ -115,9 +116,10 @@ public class App {
         MethodInfo info = classFile.getMethod(method.getName());
         CodeIterator iterator = info.getCodeAttribute().iterator();
         for(int i = 0; i < getBasicBlocks(method).length; i++) {
-            ControlFlow.Block block = getBasicBlocks(method)[i];
-            if(!isIfBLock(block, iterator)) {
-                iterator.insertAt(block.position(), createTraceStatement(block, classFile, cc).get());
+            if(!isIfBLock(getBasicBlocks(method)[i], iterator)) {
+                iterator.insertAt(getBasicBlocks(method)[i].position(), createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "begin").get());
+                int position = getBasicBlocks(method)[i].position() + getBasicBlocks(method)[i].length() - 1;
+                iterator.insertAt(position, createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "end").get());
             }
         }
     }
