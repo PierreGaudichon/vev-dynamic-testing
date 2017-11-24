@@ -84,45 +84,38 @@ public class App {
         }
     }
 
-    public static void printDenominatorTreeNodeRec(ControlFlow.Node node, int depth, CodeIterator iterator) {
-        iterator.move(node.block().position());
-        //System.out.println(depth + " : " + node.block().toString());
-        //System.out.println(depth + " : "+node.toString());
-        //System.out.println("    " + Mnemonic.OPCODE[iterator.byteAt(node.block().position())]);
-        for (int i = 0; i < node.children(); i++) {
-            printDenominatorTreeNodeRec(node.child(i), depth+1, iterator);
+    public static boolean isIfBLock(ControlFlow.Block block, CodeIterator iterator) {
+        int startBlock = block.position();
+        int endBlock = startBlock + block.length();
+        for(int i = startBlock; i < endBlock; i++) {
+            if(Mnemonic.OPCODE[iterator.byteAt(i)].contains("if")) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile) {
+        String print = "TRACE block : ("+block.position()+", "+block.length()+")";
+        Bytecode bytes = new Bytecode(classFile.getConstPool());
+        bytes.addPrintln(print);
+        return bytes;
+    }
+
+    public static ControlFlow.Block[] getBasicBlocks(CtMethod method) throws BadBytecode {
+        return new ControlFlow(method).basicBlocks();
     }
 
     public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile) throws BadBytecode {
-        //System.out.println("---");
-        ControlFlow cf = new ControlFlow(method);
+        //System.out.println("--- " + method.getName());
         MethodInfo info = classFile.getMethod(method.getName());
         CodeIterator iterator = info.getCodeAttribute().iterator();
-
-        while(iterator.hasNext()) {
-            int index = 0;
-            try {
-                index = iterator.next();
-            } catch (BadBytecode badBytecode) {
-                badBytecode.printStackTrace();
+        for(int i = 0; i < getBasicBlocks(method).length; i++) {
+            ControlFlow.Block block = getBasicBlocks(method)[i];
+            if(!isIfBLock(block, iterator)) {
+                iterator.insertAt(block.position(), createTraceStatement(block, classFile).get());
             }
-            int op = iterator.byteAt(index);
-            //System.out.println(Mnemonic.OPCODE[op]);
         }
-
-        printDenominatorTreeNodeRec(cf.dominatorTree()[0], 0, iterator);
-        Arrays.asList(cf.basicBlocks()).forEach(block -> {
-            //System.out.println(block.toString());
-            /*String print = "TRACE block : ("+block.position()+", "+block.length()+")";
-            Bytecode bytes = new Bytecode(classFile.getConstPool());
-            bytes.addPrintln(print);
-            try {
-                iterator.insertAt(block.position(), bytes.get());
-            } catch (BadBytecode badBytecode) {
-                badBytecode.printStackTrace();
-            }*/
-        });
     }
 
     public static void inspectMethod(CtMethod method, ClassFile classFile) {
@@ -151,8 +144,8 @@ public class App {
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
-                    inspectMethod(method, classFile);
                     addCallingName("method", method);
+                    inspectMethod(method, classFile);
                 });
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
