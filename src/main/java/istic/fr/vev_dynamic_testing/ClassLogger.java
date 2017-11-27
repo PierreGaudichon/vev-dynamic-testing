@@ -16,6 +16,7 @@ public class ClassLogger {
 
     public ClassLogger(CtClass cc, CtClass logs) {
         this.cc = cc;
+        this.logs = logs;
         // classFile = cc.getClassFile();
     }
 

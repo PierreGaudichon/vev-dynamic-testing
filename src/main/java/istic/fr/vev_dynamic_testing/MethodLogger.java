@@ -23,6 +23,7 @@ public class MethodLogger {
 
     public MethodLogger(CtClass cc, CtMethod method, CtClass logs) {
         this.cc = cc;
+        this.logs = logs;
         this.classFile = cc.getClassFile();
         this.method = method;
         info = classFile.getMethod(method.getName());
