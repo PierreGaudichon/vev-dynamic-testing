@@ -67,73 +67,9 @@ public class App {
     }
     
     public static String addLog(String log) {
-    	
     	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
     	return ret;
     }
-
-    public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
-    	behavior.addLocalVariable("logs", logs);
-        behavior.insertBefore(addLog("TRACE begin-"+type+" : "+behavior.getLongName()));
-        behavior.insertAfter(addLog("TRACE end-"+type+" : "+behavior.getLongName()));
-    }
-
-    public static void addCallingName(String type, CtBehavior behavior) {
-        try {
-            addCallingNameUnsafe(type, behavior);
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean isIfBLock(ControlFlow.Block block, CodeIterator iterator) {
-        int startBlock = block.position();
-        int endBlock = startBlock + block.length();
-        for(int i = startBlock; i < endBlock; i++) {
-            if(Mnemonic.OPCODE[iterator.byteAt(i)].contains("if")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc, String index) throws CompileError {
-        String print = "TRACE "+index+"-block : ("+block.position()+", "+block.length()+")";
-        // `Javac` is an internal part of Javassist that should probably not be used here.
-        // I couldn't find a way to construct bytecode from string directly from Javassist.
-        // The next three lines do exactly what we want though.
-        Javac jv = new Javac(cc);
-        jv.compileStmnt("Logs.getInstance().addLogs(\""+print+"\");");
-        return jv.getBytecode();
-    }
-
-    public static ControlFlow.Block[] getBasicBlocks(CtMethod method) throws BadBytecode {
-        return new ControlFlow(method).basicBlocks();
-    }
-
-    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile, CtClass cc) throws BadBytecode, CompileError {
-        //System.out.println("--- " + method.getName());
-        MethodInfo info = classFile.getMethod(method.getName());
-        CodeIterator iterator = info.getCodeAttribute().iterator();
-        for(int i = 0; i < getBasicBlocks(method).length; i++) {
-            if(!isIfBLock(getBasicBlocks(method)[i], iterator)) {
-                iterator.insertAt(getBasicBlocks(method)[i].position(), createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "begin").get());
-                int position = getBasicBlocks(method)[i].position() + getBasicBlocks(method)[i].length() - 1;
-                iterator.insertAt(position, createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "end").get());
-            }
-        }
-    }
-
-    public static void inspectMethod(CtMethod method, ClassFile classFile, CtClass cc) {
-        try {
-            inspectMethodUnsafe(method, classFile, cc);
-        } catch (BadBytecode badBytecode) {
-            badBytecode.printStackTrace();
-        } catch (CompileError compileError) {
-            compileError.printStackTrace();
-        }
-    }
-
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
@@ -150,11 +86,9 @@ public class App {
 
         //Arrays.asList(cc.getConstructors())
         //        .forEach(constructor -> addCallingName("constructor", constructor));
-        Arrays.asList(cc.getDeclaredMethods())
-                .forEach((CtMethod method) -> {
-                    inspectMethod(method, classFile, cc);
-                    addCallingName("method", method);
-                });
+        Arrays.asList(cc.getDeclaredMethods()).forEach((CtMethod method) -> {
+            new MethodLogger(cc, method).makeLogs();
+        });
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
