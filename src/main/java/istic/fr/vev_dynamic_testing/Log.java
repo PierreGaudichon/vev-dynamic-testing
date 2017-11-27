@@ -57,5 +57,4 @@ public class Log {
 		return (getIo() == IO.BEGIN) && (getType() == TYPE.METHOD);
 	}
 
-
 }
