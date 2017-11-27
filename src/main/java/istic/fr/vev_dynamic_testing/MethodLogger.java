@@ -58,7 +58,7 @@ public class MethodLogger {
     private void makeBlockLogs() throws BadBytecode, CompileError {
         for(int i = 0; i < getBlocks().size(); i++) {
             if(!isIfBLock(getBlock(i))) {
-                String info = getBlock(i).position()+","+getBlock(i).length();
+                String info = method.getLongName()+","+getBlock(i).position()+","+getBlock(i).length();
                 String before = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, info).toStatement();
                 String after = new Log(Log.IO.END, Log.TYPE.BLOCK, info).toStatement();
                 iterator.insertAt(getBlock(i).position(), getBytecode(before).get());

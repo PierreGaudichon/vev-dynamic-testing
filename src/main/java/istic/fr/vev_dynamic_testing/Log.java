@@ -25,6 +25,18 @@ public class Log {
 		this.message = message;
 	}
 
+	public IO getIo() {
+		return io;
+	}
+
+	public TYPE getType() {
+		return type;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
 	public String toCallableType() {
 		return "\""+io+"\",\""+type+"\",\""+message+"\"";
 	}
@@ -36,5 +48,14 @@ public class Log {
 	public String toString() {
 		return new Gson().toJson(this);
 	}
+
+	public boolean isBeginBlock() {
+		return (getIo() == IO.BEGIN) && (getType() == TYPE.BLOCK);
+	}
+
+	public boolean isBeginMethod() {
+		return (getIo() == IO.BEGIN) && (getType() == TYPE.METHOD);
+	}
+
 
 }
