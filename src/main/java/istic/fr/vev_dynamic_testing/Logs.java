@@ -1,13 +1,17 @@
 package istic.fr.vev_dynamic_testing;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Logs {
 	
-	// le résultat du String
-	private String resultat;
+	// liste des logs
+	List<Log> lesLogs;
 	
 	/** Constructeur privé */
 	private Logs() {
-		this.resultat = "";
+		lesLogs = new ArrayList<Log>();
 	}
  
 	/** Instance unique non préinitialisée */
@@ -23,14 +27,28 @@ public class Logs {
 	}
 	
 	public void removeLogs() {
-		resultat = "";
+		lesLogs = new ArrayList<Log>();
 	}
 	
-	public void addLogs(String newLog) {
-		resultat = resultat + newLog + "\n";
+	public void addLogs(String typeLog, String messageLog) {
+		lesLogs.add(new Log(typeLog,messageLog));
 	}
 	
-	public String getResultat() {
-		return resultat;
+	public List<Log> getLogs() {
+		return lesLogs;
+	}
+	
+	public String toString() {
+		
+		String ret = "";
+		
+		Iterator<Log> it = lesLogs.iterator();
+		
+		while(it.hasNext()) {
+			Log l = it.next();
+			ret = ret + l.toString() + "\n";
+		}
+		
+		return ret;
 	}
 }

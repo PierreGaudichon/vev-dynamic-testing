@@ -64,15 +64,15 @@ public class App {
         runner.run(cc);
     }
     
-    public static String sop(String log) {
+    public static String sop(String type, String message) {
     	
-    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
+    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+type+"\",\""+message+"\");";
     	return ret;
     }
 
     public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
     	behavior.addLocalVariable("logs", logs);
-        behavior.insertBefore(sop("TRACE "+type+" : "+behavior.getLongName()));
+        behavior.insertBefore(sop(type,behavior.getLongName()));
     }
 
     public static void addCallingName(String type, CtBehavior behavior) {
@@ -142,6 +142,7 @@ public class App {
         logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
     	//logs.writeFile(TEST_PROJECT+"/target/classes");
     	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
+    	pool.importPackage("istic.fr.vev_dynamic_testing.Log");
         
         CtClass cc = pool.get(MAIN_CLASS);
         ClassFile classFile = cc.getClassFile();
@@ -151,7 +152,7 @@ public class App {
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
                     inspectMethod(method, classFile);
-                    addCallingName("method", method);
+                    addCallingName("METHOD", method);
                 });
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
@@ -162,7 +163,6 @@ public class App {
     	
     	Logs l = Logs.getInstance();
     	l.removeLogs();
-    	l.addLogs("start");
     	
     	// first step : modify the class byte-code
         modifyMain();
@@ -173,8 +173,7 @@ public class App {
         // on récupère les logs de l'exécution
         // et on les affiche
         l = Logs.getInstance();
-        l.addLogs("end");
-        System.out.println(l.getResultat());
+        System.out.println(l.toString());
     }
 
 }
