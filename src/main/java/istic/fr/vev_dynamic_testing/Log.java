@@ -13,6 +13,23 @@ public class Log {
 	public String toStatement() {
 		return "Logs.getInstance().addLogs(\""+type+"\", \""+message+"\");";
 	}
+	
+	public String getMessage() {
+		return message;
+	}
+	
+	public void setMessage(String m) {
+		message = m;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public void setType(String t) {
+		type = t;
+	}
+	
 	public String toString() {
 		
 		String ret = "";

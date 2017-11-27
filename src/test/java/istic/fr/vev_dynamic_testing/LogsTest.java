@@ -5,15 +5,15 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for simple App.
+ * Unit test for simple Log.
  */
-public class LogTest extends TestCase {
+public class LogsTest extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public LogTest( String testName ) {
+    public LogsTest( String testName ) {
         super( testName );
     }
 
@@ -21,7 +21,7 @@ public class LogTest extends TestCase {
      * @return the suite of tests being tested
      */
     public static Test suite() {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( LogsTest.class );
     }
 
     /**
@@ -29,8 +29,9 @@ public class LogTest extends TestCase {
      */
     public void testConstructorLog() {
         
-    	Log l = new Log ("a","b");
+    	Logs l = Logs.getInstance();
     	
-    	assertTrue( l.getType().equals("a") );
+    	assertTrue(true);
     }
+
 }
