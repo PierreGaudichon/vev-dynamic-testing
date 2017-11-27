@@ -61,15 +61,10 @@ public class App {
         logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
     	//logs.writeFile(TEST_PROJECT+"/target/classes");
     	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
-        
-        CtClass cc = pool.get(MAIN_CLASS);
-        ClassFile classFile = cc.getClassFile();
 
-        //Arrays.asList(cc.getConstructors())
-        //        .forEach(constructor -> addCallingName("constructor", constructor));
-        Arrays.asList(cc.getDeclaredMethods()).forEach((CtMethod method) -> {
-            new MethodLogger(cc, method).makeLogs();
-        });
+        CtClass cc = pool.get(MAIN_CLASS);
+        ClassLogger classLogger = new ClassLogger(cc);
+        classLogger.makeLogs();
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
