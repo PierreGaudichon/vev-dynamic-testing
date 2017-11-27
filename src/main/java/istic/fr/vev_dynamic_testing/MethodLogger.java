@@ -14,14 +14,16 @@ import java.util.List;
 
 public class MethodLogger {
 
+    private CtClass logs;
     private CtClass cc;
     private ClassFile classFile;
     private CtMethod method;
     private MethodInfo info;
     private CodeIterator iterator;
 
-    public MethodLogger(CtClass cc, CtMethod method) {
+    public MethodLogger(CtClass cc, CtMethod method, CtClass logs) {
         this.cc = cc;
+        this.logs = logs;
         this.classFile = cc.getClassFile();
         this.method = method;
         info = classFile.getMethod(method.getName());
@@ -48,13 +50,18 @@ public class MethodLogger {
     }
 
     private Bytecode getBytecode(ControlFlow.Block block) throws CompileError {
-        String print = "TRACE "+index+"-block : ("+block.position()+", "+block.length()+")";
+        String print = "TRACE block : ("+block.position()+", "+block.length()+")";
         // `Javac` is an internal part of Javassist that should probably not be used here.
         // I couldn't find a way to construct bytecode from string directly from Javassist.
         // The next three lines do exactly what we want though.
         Javac jv = new Javac(cc);
-        jv.compileStmnt("Logs.getInstance().addLogs(\"BLOCK\",\""+print+"\");");
+        jv.compileStmnt(new Log("BLOCK", print).toStatement());
         return jv.getBytecode();
+    }
+
+
+    public static String addLog(String type, String message) {
+        return new Log(type, message).toStatement();
     }
 
     private void makeBlockLogs() throws BadBytecode, CompileError {
@@ -67,10 +74,10 @@ public class MethodLogger {
         }
     }
 
-    private void makeMethodLogs() {
+    private void makeMethodLogs() throws CannotCompileException {
         method.addLocalVariable("logs", logs);
-        method.insertBefore(addLog("TRACE begin-"+type+" : "+behavior.getLongName()));
-        method.insertAfter(addLog("TRACE end-"+type+" : "+behavior.getLongName()));
+        method.insertBefore(addLog("METHOD", "TRACE begin-method : "+method.getLongName()));
+        method.insertAfter(addLog("METHOD", "TRACE end-method : "+method.getLongName()));
     }
 
     public void makeLogs() {
@@ -81,6 +88,8 @@ public class MethodLogger {
             badBytecode.printStackTrace();
         } catch (CompileError compileError) {
             compileError.printStackTrace();
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
         }
     }
 }

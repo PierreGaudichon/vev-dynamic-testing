@@ -11,15 +11,17 @@ public class ClassLogger {
 
     // ClassPool pool;
     CtClass cc;
+    CtClass logs;
     // ClassFile classFile;
 
-    public ClassLogger(CtClass cc) {
+    public ClassLogger(CtClass cc, CtClass logs) {
         this.cc = cc;
+        this.logs = logs;
         // classFile = cc.getClassFile();
     }
 
     private MethodLogger createMethodLogger(CtMethod method) {
-        return new MethodLogger(cc, method);
+        return new MethodLogger(cc, method, logs);
     }
 
     public void makeLogs() {
