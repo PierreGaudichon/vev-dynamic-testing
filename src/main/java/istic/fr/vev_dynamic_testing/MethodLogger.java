@@ -53,7 +53,7 @@ public class MethodLogger {
         // I couldn't find a way to construct bytecode from string directly from Javassist.
         // The next three lines do exactly what we want though.
         Javac jv = new Javac(cc);
-        jv.compileStmnt("Logs.getInstance().addLogs(\""+print+"\");");
+        jv.compileStmnt("Logs.getInstance().addLogs(\"BLOCK\",\""+print+"\");");
         return jv.getBytecode();
     }
 
