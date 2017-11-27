@@ -30,8 +30,8 @@ public class Logs {
 		lesLogs = new ArrayList<Log>();
 	}
 	
-	public void addLogs(String typeLog, String messageLog) {
-		lesLogs.add(new Log(typeLog,messageLog));
+	public void addLogs(String io, String type, String message) {
+		lesLogs.add(new Log(Log.IO.valueOf(io), Log.TYPE.valueOf(type), message));
 	}
 	
 	public List<Log> getLogs() {

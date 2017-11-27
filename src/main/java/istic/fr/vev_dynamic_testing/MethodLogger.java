@@ -1,9 +1,6 @@
 package istic.fr.vev_dynamic_testing;
 
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtMethod;
+import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.compiler.CompileError;
@@ -49,35 +46,32 @@ public class MethodLogger {
         return false;
     }
 
-    private Bytecode getBytecode(ControlFlow.Block block) throws CompileError {
-        String print = "TRACE block : ("+block.position()+", "+block.length()+")";
+    private Bytecode getBytecode(String print) throws CompileError {
         // `Javac` is an internal part of Javassist that should probably not be used here.
         // I couldn't find a way to construct bytecode from string directly from Javassist.
         // The next three lines do exactly what we want though.
         Javac jv = new Javac(cc);
-        jv.compileStmnt(new Log("BLOCK", print).toStatement());
+        jv.compileStmnt(print);
         return jv.getBytecode();
-    }
-
-
-    public static String addLog(String type, String message) {
-        return new Log(type, message).toStatement();
     }
 
     private void makeBlockLogs() throws BadBytecode, CompileError {
         for(int i = 0; i < getBlocks().size(); i++) {
             if(!isIfBLock(getBlock(i))) {
-                iterator.insertAt(getBlock(i).position(), getBytecode(getBlock(i)).get());
+                String info = getBlock(i).position()+","+getBlock(i).length();
+                String before = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, info).toStatement();
+                String after = new Log(Log.IO.END, Log.TYPE.BLOCK, info).toStatement();
+                iterator.insertAt(getBlock(i).position(), getBytecode(before).get());
                 int position = getBlock(i).position() + getBlock(i).length() - 1;
-                iterator.insertAt(position, getBytecode(getBlock(i)).get());
+                iterator.insertAt(position, getBytecode(after).get());
             }
         }
     }
 
     private void makeMethodLogs() throws CannotCompileException {
         method.addLocalVariable("logs", logs);
-        method.insertBefore(addLog("METHOD", "TRACE begin-method : "+method.getLongName()));
-        method.insertAfter(addLog("METHOD", "TRACE end-method : "+method.getLongName()));
+        method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, method.getLongName()).toStatement());
+        method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, method.getLongName()).toStatement());
     }
 
     public void makeLogs() {
