@@ -46,11 +46,13 @@ public class App {
         runner.addListener(new TextListener(System.out));
         runner.run(cc);
     }
-    
-    public static String addLog(String log) {
-    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+log+"\");";
+
+    public static String addLog(String type, String message) {
+    	
+    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+type+"\",\""+message+"\");";
     	return ret;
     }
+
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
@@ -61,7 +63,8 @@ public class App {
         logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
     	//logs.writeFile(TEST_PROJECT+"/target/classes");
     	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
-
+    	pool.importPackage("istic.fr.vev_dynamic_testing.Log");
+        
         CtClass cc = pool.get(MAIN_CLASS);
         ClassLogger classLogger = new ClassLogger(cc);
         classLogger.makeLogs();
@@ -74,7 +77,6 @@ public class App {
     	
     	Logs l = Logs.getInstance();
     	l.removeLogs();
-    	l.addLogs("start");
     	
     	// first step : modify the class byte-code
         modifyMain();
@@ -85,8 +87,7 @@ public class App {
         // on récupère les logs de l'exécution
         // et on les affiche
         l = Logs.getInstance();
-        l.addLogs("end");
-        System.out.println(l.getResultat());
+        System.out.println(l.toString());
     }
 
 }
