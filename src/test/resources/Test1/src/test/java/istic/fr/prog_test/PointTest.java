@@ -41,4 +41,11 @@ public class PointTest extends TestCase {
 		assertEquals((double) 2,test);
 	}
 
+	public void testIsOrigin() throws Exception {
+		Point p1 = new Point(0, 0);
+		Point p2 = new Point(1, 1);
+		assertTrue(p1.isOrigin());
+		assertFalse(p2.isOrigin());
+	}
+
 }

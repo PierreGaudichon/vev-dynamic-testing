@@ -4,6 +4,8 @@ package istic.fr.vev_dynamic_testing;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
+import javassist.compiler.CompileError;
+import javassist.compiler.Javac;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -64,7 +66,7 @@ public class App {
         runner.run(cc);
     }
     
-    public static String sop(String type, String message) {
+    public static String addLog(String type, String message) {
     	
     	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+type+"\",\""+message+"\");";
     	return ret;
@@ -72,7 +74,8 @@ public class App {
 
     public static void addCallingNameUnsafe(String type, CtBehavior behavior) throws CannotCompileException {
     	behavior.addLocalVariable("logs", logs);
-        behavior.insertBefore(sop(type,behavior.getLongName()));
+        behavior.insertBefore(addLog(type,"Enter - "+behavior.getLongName()));
+		behavior.insertAfter(addLog(type,"Exit - "+behavior.getLongName()));
     }
 
     public static void addCallingName(String type, CtBehavior behavior) {
@@ -83,52 +86,51 @@ public class App {
         }
     }
 
-    public static void printDenominatorTreeNodeRec(ControlFlow.Node node, int depth, CodeIterator iterator) {
-        iterator.move(node.block().position());
-        //System.out.println(depth + " : " + node.block().toString());
-        //System.out.println(depth + " : "+node.toString());
-        //System.out.println("    " + Mnemonic.OPCODE[iterator.byteAt(node.block().position())]);
-        for (int i = 0; i < node.children(); i++) {
-            printDenominatorTreeNodeRec(node.child(i), depth+1, iterator);
+    public static boolean isIfBLock(ControlFlow.Block block, CodeIterator iterator) {
+        int startBlock = block.position();
+        int endBlock = startBlock + block.length();
+        for(int i = startBlock; i < endBlock; i++) {
+            if(Mnemonic.OPCODE[iterator.byteAt(i)].contains("if")) {
+                return true;
+            }
         }
+        return false;
     }
 
-    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile) throws BadBytecode {
-        //System.out.println("---");
-        ControlFlow cf = new ControlFlow(method);
+    public static Bytecode createTraceStatement(ControlFlow.Block block, ClassFile classFile, CtClass cc, String index) throws CompileError {
+        String print = "TRACE "+index+"-block : ("+block.position()+", "+block.length()+")";
+        // `Javac` is an internal part of Javassist that should probably not be used here.
+        // I couldn't find a way to construct bytecode from string directly from Javassist.
+        // The next three lines do exactly what we want though.
+        Javac jv = new Javac(cc);
+        jv.compileStmnt("Logs.getInstance().addLogs(\"BLOCK\",\""+print+"\");");
+        return jv.getBytecode();
+    }
+
+    public static ControlFlow.Block[] getBasicBlocks(CtMethod method) throws BadBytecode {
+        return new ControlFlow(method).basicBlocks();
+    }
+
+    public static void inspectMethodUnsafe(CtMethod method, ClassFile classFile, CtClass cc) throws BadBytecode, CompileError {
+        //System.out.println("--- " + method.getName());
         MethodInfo info = classFile.getMethod(method.getName());
         CodeIterator iterator = info.getCodeAttribute().iterator();
-
-        while(iterator.hasNext()) {
-            int index = 0;
-            try {
-                index = iterator.next();
-            } catch (BadBytecode badBytecode) {
-                badBytecode.printStackTrace();
+        for(int i = 0; i < getBasicBlocks(method).length; i++) {
+            if(!isIfBLock(getBasicBlocks(method)[i], iterator)) {
+                iterator.insertAt(getBasicBlocks(method)[i].position(), createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "begin").get());
+                int position = getBasicBlocks(method)[i].position() + getBasicBlocks(method)[i].length() - 1;
+                iterator.insertAt(position, createTraceStatement(getBasicBlocks(method)[i], classFile, cc, "end").get());
             }
-            int op = iterator.byteAt(index);
-            //System.out.println(Mnemonic.OPCODE[op]);
         }
-
-        printDenominatorTreeNodeRec(cf.dominatorTree()[0], 0, iterator);
-        Arrays.asList(cf.basicBlocks()).forEach(block -> {
-            //System.out.println(block.toString());
-            /*String print = "TRACE block : ("+block.position()+", "+block.length()+")";
-            Bytecode bytes = new Bytecode(classFile.getConstPool());
-            bytes.addPrintln(print);
-            try {
-                iterator.insertAt(block.position(), bytes.get());
-            } catch (BadBytecode badBytecode) {
-                badBytecode.printStackTrace();
-            }*/
-        });
     }
 
-    public static void inspectMethod(CtMethod method, ClassFile classFile) {
+    public static void inspectMethod(CtMethod method, ClassFile classFile, CtClass cc) {
         try {
-            inspectMethodUnsafe(method, classFile);
+            inspectMethodUnsafe(method, classFile, cc);
         } catch (BadBytecode badBytecode) {
             badBytecode.printStackTrace();
+        } catch (CompileError compileError) {
+            compileError.printStackTrace();
         }
     }
 
@@ -151,8 +153,8 @@ public class App {
         //        .forEach(constructor -> addCallingName("constructor", constructor));
         Arrays.asList(cc.getDeclaredMethods())
                 .forEach((CtMethod method) -> {
-                    inspectMethod(method, classFile);
-                    addCallingName("METHOD", method);
+                    inspectMethod(method, classFile, cc);
+                    addCallingName("method", method);
                 });
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
