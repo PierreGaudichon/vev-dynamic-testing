@@ -6,26 +6,13 @@ public class Log {
 	private String message;
 	
 	Log(String type, String message) {
-		this.setType(type);
-		this.setMessage(message);
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
+		this.type = type;
 		this.message = message;
 	}
 
-	public String getType() {
-		return type;
+	public String toStatement() {
+		return "Logs.getInstance().addLogs(\""+type+"\", \""+message+"\");";
 	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
 	public String toString() {
 		
 		String ret = "";

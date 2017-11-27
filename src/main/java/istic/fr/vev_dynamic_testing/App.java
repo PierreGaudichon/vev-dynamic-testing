@@ -47,13 +47,6 @@ public class App {
         runner.run(cc);
     }
 
-    public static String addLog(String type, String message) {
-    	
-    	String ret = "logs = Logs.getInstance(); logs.addLogs(\""+type+"\",\""+message+"\");";
-    	return ret;
-    }
-
-
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
@@ -66,7 +59,7 @@ public class App {
     	pool.importPackage("istic.fr.vev_dynamic_testing.Log");
         
         CtClass cc = pool.get(MAIN_CLASS);
-        ClassLogger classLogger = new ClassLogger(cc);
+        ClassLogger classLogger = new ClassLogger(cc, logs);
         classLogger.makeLogs();
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
