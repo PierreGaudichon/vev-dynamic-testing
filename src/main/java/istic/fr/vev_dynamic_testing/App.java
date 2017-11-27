@@ -34,25 +34,6 @@ public class App {
     // ctClass qui représente le logger
     private static CtClass logs = null;
 
-    private static class MyTranslator implements Translator {
-        public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
-            System.out.println("starting with classpool");
-        }
-        public void onLoad(ClassPool pool, String className) {
-            System.out.println(className);
-        }
-    }
-
-    /*public static void main( String[] args ) throws Throwable {
-        ClassPool pool = ClassPool.getDefault();
-        Loader loader = new Loader(pool);
-        Translator lopper = new MyTranslator();
-        loader.addTranslator(pool, lopper);
-        pool.appendClassPath("/test/resources");
-        loader.run("istic.fr.prog_test.PointTest",args);
-        PointTest
-   }*/
-
     public static ClassLoader testProjectLoader() throws MalformedURLException {
         return new URLClassLoader(new URL[]{
                 new File(TEST_PROJECT + "/target/test-classes").toURL(),
