@@ -29,8 +29,10 @@ public class LogTest extends TestCase {
      */
     public void testConstructorLog() {
         
-    	Log l = new Log ("a","b");
-    	
-    	assertTrue( l.getType().equals("a") );
+    	Log l = new Log (Log.IO.BEGIN, Log.TYPE.METHOD, "b");
+
+    	assertTrue(l.getIo().equals(Log.IO.BEGIN));
+    	assertTrue(l.getType().equals(Log.TYPE.METHOD));
+    	assertTrue(l.getMessage().equals("b"));
     }
 }

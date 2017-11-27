@@ -81,8 +81,10 @@ public class App {
         // et on les affiche
         l = Logs.getInstance();
         Report r = new Report(l.getLogs());
+
         System.out.println("Number of execution of each block.");
         Report.print(r.nbBLockExectution());
+
         System.out.println("Sequence of method calls.");
         Report.print(r.methodCallSequence());
     }
