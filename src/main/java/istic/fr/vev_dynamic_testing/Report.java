@@ -37,7 +37,7 @@ public class Report {
     public List<String> methodCallSequence() {
         return logs.stream()
                 .filter(log -> log.isBeginMethod())
-                .map(Log::toString)
+                .map(Log::getMessage)
                 .collect(Collectors.toList());
     }
 
