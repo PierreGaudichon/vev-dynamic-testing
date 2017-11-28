@@ -30,7 +30,7 @@ public class MethodLogerTest extends TestCase {
      */
     public void testConstructorLog() {
         
-    	Log l = new Log (IO.BEGIN,TYPE.BLOCK,"b");
+    	Log l = new Log(IO.BEGIN,TYPE.BLOCK,"b");
     	
     	assertTrue( l.getType().equals("a") );
     }
