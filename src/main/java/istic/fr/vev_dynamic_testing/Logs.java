@@ -3,6 +3,7 @@ package istic.fr.vev_dynamic_testing;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class Logs {
 	
@@ -30,8 +31,8 @@ public class Logs {
 		lesLogs = new ArrayList<Log>();
 	}
 	
-	public void addLogs(String typeLog, String messageLog) {
-		lesLogs.add(new Log(typeLog,messageLog));
+	public void addLogs(String io, String type, String message) {
+		lesLogs.add(new Log(Log.IO.valueOf(io), Log.TYPE.valueOf(type), message));
 	}
 	
 	public List<Log> getLogs() {
@@ -39,16 +40,7 @@ public class Logs {
 	}
 	
 	public String toString() {
-		
-		String ret = "";
-		
-		Iterator<Log> it = lesLogs.iterator();
-		
-		while(it.hasNext()) {
-			Log l = it.next();
-			ret = ret + l.toString() + "\n";
-		}
-		
-		return ret;
+		List<String> ls = lesLogs.stream().map(Log::toString).collect(Collectors.toList());
+		return "[\n" +String.join(",\n", ls) + "\n]";
 	}
 }

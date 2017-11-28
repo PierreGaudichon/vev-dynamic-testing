@@ -1,42 +1,60 @@
 package istic.fr.vev_dynamic_testing;
 
+import com.google.gson.Gson;
+
 public class Log {
-	
-	private String type;
+
+	public enum IO {
+		BEGIN,
+		END
+	}
+
+	public enum TYPE {
+		BLOCK,
+		METHOD,
+		CONSTRUCTOR
+	}
+
+	private IO io;
+	private TYPE type;
 	private String message;
 	
-	Log(String type, String message) {
+	Log(IO io, TYPE type,String message) {
+		this.io = io;
 		this.type = type;
 		this.message = message;
 	}
 
-	public String toStatement() {
-		return "Logs.getInstance().addLogs(\""+type+"\", \""+message+"\");";
+	public IO getIo() {
+		return io;
 	}
-	
+
+	public TYPE getType() {
+		return type;
+	}
+
 	public String getMessage() {
 		return message;
 	}
-	
-	public void setMessage(String m) {
-		message = m;
+
+	public String toCallableType() {
+		return "\""+io+"\",\""+type+"\",\""+message+"\"";
 	}
-	
-	public String getType() {
-		return type;
+
+	public String toStatement() {
+		return "Logs.getInstance().addLogs("+toCallableType()+");";
 	}
-	
-	public void setType(String t) {
-		type = t;
-	}
-	
+
 	public String toString() {
-		
-		String ret = "";
-		
-		ret = "Type="+type+" : message="+message;
-		
-		return ret;
+		return new Gson().toJson(this);
+	}
+
+	public boolean isBeginBlock() {
+		return (getIo() == IO.BEGIN) && (getType() == TYPE.BLOCK);
+	}
+
+	public boolean isBeginMethod() {
+		return (getIo() == IO.BEGIN) && (getType() == TYPE.METHOD);
 	}
 
 }

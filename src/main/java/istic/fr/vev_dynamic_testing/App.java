@@ -76,11 +76,17 @@ public class App {
         //On lance JUnit sur la class de test
         runTest(testProjectLoader().loadClass(TEST_CLASS));
         System.out.println("Done.");
-        
+
         // on récupère les logs de l'exécution
         // et on les affiche
         l = Logs.getInstance();
-        System.out.println(l.toString());
+        Report r = new Report(l.getLogs());
+
+        System.out.println("Number of execution of each block.");
+        Report.print(r.nbBLockExectution());
+
+        System.out.println("Sequence of method calls.");
+        Report.print(r.methodCallSequence());
     }
 
 }
