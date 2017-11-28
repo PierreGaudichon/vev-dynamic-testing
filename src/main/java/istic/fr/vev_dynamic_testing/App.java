@@ -1,25 +1,18 @@
 package istic.fr.vev_dynamic_testing;
 
 
-import javassist.*;
-import javassist.bytecode.*;
-import javassist.bytecode.analysis.ControlFlow;
-import javassist.compiler.CompileError;
-import javassist.compiler.Javac;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Hello world!
@@ -47,6 +40,10 @@ public class App {
         runner.run(cc);
     }
 
+    public static void buildProject() throws  IOException {
+        Runtime.getRuntime().exec("./build_test_project.sh");
+    }
+
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
@@ -70,7 +67,9 @@ public class App {
     	
     	Logs l = Logs.getInstance();
     	l.removeLogs();
-    	
+
+    	// Recompile target project
+        buildProject();
     	// first step : modify the class byte-code
         modifyMain();
         //On lance JUnit sur la class de test
