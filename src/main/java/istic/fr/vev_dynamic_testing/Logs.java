@@ -6,6 +6,11 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 
 public class Logs {
+
+	public static String toString(List<Log> logs) {
+		List<String> ls = logs.stream().map(Log::toString).collect(Collectors.toList());
+		return "[\n" +String.join(",\n", ls) + "\n]";
+	}
 	
 	// liste des logs
 	private List<Log> lesLogs;
@@ -44,7 +49,6 @@ public class Logs {
 	}
 	
 	public String toString() {
-		List<String> ls = lesLogs.stream().map(Log::toString).collect(Collectors.toList());
-		return "[\n" +String.join(",\n", ls) + "\n]";
+		return Logs.toString(getLogs());
 	}
 }
