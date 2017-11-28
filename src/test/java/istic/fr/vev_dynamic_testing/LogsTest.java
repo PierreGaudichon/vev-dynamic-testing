@@ -3,6 +3,8 @@ package istic.fr.vev_dynamic_testing;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
+import istic.fr.vev_dynamic_testing.Log.IO;
+import istic.fr.vev_dynamic_testing.Log.TYPE;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -35,7 +37,7 @@ public class LogsTest extends TestCase {
     	
     	Logs l = Logs.getInstance();
     	int i = l.getLogs().size();
-    	l.addLogs("a", "b");
+    	l.addLogs("BEGIN","BLOCK", "b");
     	int j = l.getLogs().size();
     	assertTrue( i == 0 && j == 1 );
     	
@@ -47,7 +49,7 @@ public class LogsTest extends TestCase {
     public void testB_Remove() {
     	
     	Logs l = Logs.getInstance();
-    	l.addLogs("", "");
+    	l.addLogs("BEGIN","BLOCK","message");
     	int i = l.getLogs().size();
     	l.removeLogs();
     	int j = l.getLogs().size();
