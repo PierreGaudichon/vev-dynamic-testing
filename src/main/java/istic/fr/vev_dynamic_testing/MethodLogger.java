@@ -61,6 +61,7 @@ public class MethodLogger {
                 String info = method.getLongName()+","+getBlock(i).position()+","+getBlock(i).length();
                 String before = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, info).toStatement();
                 String after = new Log(Log.IO.END, Log.TYPE.BLOCK, info).toStatement();
+                Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.BLOCK, info));
                 iterator.insertAt(getBlock(i).position(), getBytecode(before).get());
                 int position = getBlock(i).position() + getBlock(i).length() - 1;
                 iterator.insertAt(position, getBytecode(after).get());
@@ -69,6 +70,7 @@ public class MethodLogger {
     }
 
     private void makeMethodLogs() throws CannotCompileException {
+        Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.METHOD, method.getLongName()));
         method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, method.getLongName()).toStatement());
         method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, method.getLongName()).toStatement());
     }

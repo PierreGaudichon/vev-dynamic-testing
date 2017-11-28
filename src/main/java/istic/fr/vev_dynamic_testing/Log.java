@@ -6,7 +6,8 @@ public class Log {
 
 	public enum IO {
 		BEGIN,
-		END
+		END,
+		DECLARING
 	}
 
 	public enum TYPE {
@@ -55,6 +56,10 @@ public class Log {
 
 	public boolean isBeginMethod() {
 		return (getIo() == IO.BEGIN) && (getType() == TYPE.METHOD);
+	}
+
+	public boolean isDeclaringBlock() {
+		return (getIo() == IO.DECLARING) && (getType() == TYPE.BLOCK);
 	}
 
 }

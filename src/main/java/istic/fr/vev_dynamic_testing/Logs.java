@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Logs {
 	
 	// liste des logs
-	List<Log> lesLogs;
+	private List<Log> lesLogs;
 	
 	/** Constructeur privé */
 	private Logs() {
@@ -30,9 +30,13 @@ public class Logs {
 	public void removeLogs() {
 		lesLogs = new ArrayList<Log>();
 	}
+
+	public void addLogs(Log log) {
+		lesLogs.add(log);
+	}
 	
 	public void addLogs(String io, String type, String message) {
-		lesLogs.add(new Log(Log.IO.valueOf(io), Log.TYPE.valueOf(type), message));
+		addLogs(new Log(Log.IO.valueOf(io), Log.TYPE.valueOf(type), message));
 	}
 	
 	public List<Log> getLogs() {
