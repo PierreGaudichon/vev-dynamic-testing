@@ -69,7 +69,6 @@ public class MethodLogger {
     }
 
     private void makeMethodLogs() throws CannotCompileException {
-        method.addLocalVariable("logs", logs);
         method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, method.getLongName()).toStatement());
         method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, method.getLongName()).toStatement());
     }
