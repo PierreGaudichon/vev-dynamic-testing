@@ -21,7 +21,7 @@ import java.net.URLClassLoader;
 public class App {
 
     public final static String TEST_PROJECT = "src/test/resources/Test1";
-    public final static String TEST_CLASS = "istic.fr.prog_test.PointTest";
+    public final static String TEST_CLASS = "istic.fr.prog_test.PointTestNot";
     public final static String MAIN_CLASS = "istic.fr.prog_test.Point";
     
     // ctClass qui représente le logger
