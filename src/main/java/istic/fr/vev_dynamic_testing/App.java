@@ -35,7 +35,8 @@ public class App {
         });
     }
 
-    public static void runTest(Class cc) {
+    public static void runTest() throws MalformedURLException, ClassNotFoundException {
+        Class cc = testProjectLoader().loadClass(TEST_CLASS);
         JUnitCore runner = new JUnitCore();
         runner.addListener(new TextListener(System.out));
         runner.run(cc);
@@ -63,23 +64,8 @@ public class App {
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
 
-
-    public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException {
-    	
-    	Logs l = Logs.getInstance();
-    	l.removeLogs();
-
-    	// Recompile target project
-        buildProject();
-    	// first step : modify the class byte-code
-        modifyMain();
-        //On lance JUnit sur la class de test
-        runTest(testProjectLoader().loadClass(TEST_CLASS));
-        System.out.println("Done.");
-
-        // on récupère les logs de l'exécution
-        // et on les affiche
-        l = Logs.getInstance();
+    public static void printReports() {
+        Logs l = Logs.getInstance();
         Report r = new Report(l.getLogs());
 
         System.out.println("Number of execution of each block.");
@@ -87,6 +73,20 @@ public class App {
 
         System.out.println("Sequence of method calls.");
         Report.print(r.methodCallSequence());
+    }
+
+
+    public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException {
+        // Reset logs.
+    	Logs.getInstance().removeLogs();
+    	// Recompile target project
+        buildProject();
+    	// first step : modify the class byte-code
+        modifyMain();
+        //On lance JUnit sur la class de test
+        runTest();
+        // on récupère les logs de l'exécution et on les affiche
+        printReports();
     }
 
 }
