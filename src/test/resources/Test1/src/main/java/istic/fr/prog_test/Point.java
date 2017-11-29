@@ -42,6 +42,15 @@ public class Point {
 			return false;
 		}
 	}
+
+	// This method should not be unit tested.
+	public boolean notTestedYet() { // Such constant, much fancy ! :doge_emoji:
+		if(Math.random() < 0.5) {
+			return true;
+		} else {
+			return true;
+		}
+	}
 	
 
 }
