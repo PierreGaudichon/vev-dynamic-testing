@@ -1,13 +1,12 @@
-package istic.fr.vev_dynamic_testing;
+package istic.fr.vev_dynamic_testing.loggers;
 
-import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtConstructor;
 import javassist.CtMethod;
-import javassist.bytecode.ClassFile;
 
 import java.util.Arrays;
 
-public class ClassLogger {
+public class ClassLogger implements CtXLogger {
 
     // ClassPool pool;
     CtClass cc;
@@ -24,9 +23,14 @@ public class ClassLogger {
         return new MethodLogger(cc, method, logs);
     }
 
+    private CtXLogger createConstructorLogger(CtConstructor constructor) {
+        return new ConstructorLogger(cc, constructor, logs);
+    }
+
     public void makeLogs() {
-        //Arrays.asList(cc.getConstructors())
-        //        .forEach(constructor -> addCallingName("constructor", constructor));
+        Arrays.asList(cc.getConstructors()).forEach(constructor -> {
+            createConstructorLogger(constructor).makeLogs();
+        });
         Arrays.asList(cc.getDeclaredMethods()).forEach((CtMethod method) -> {
             createMethodLogger(method).makeLogs();
         });

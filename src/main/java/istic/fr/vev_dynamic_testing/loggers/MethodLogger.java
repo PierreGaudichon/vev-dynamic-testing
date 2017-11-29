@@ -1,5 +1,7 @@
-package istic.fr.vev_dynamic_testing;
+package istic.fr.vev_dynamic_testing.loggers;
 
+import istic.fr.vev_dynamic_testing.Log;
+import istic.fr.vev_dynamic_testing.Logs;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
@@ -9,7 +11,7 @@ import javassist.compiler.Javac;
 import java.util.Arrays;
 import java.util.List;
 
-public class MethodLogger {
+public class MethodLogger implements CtXLogger {
 
     private CtClass logs;
     private CtClass cc;

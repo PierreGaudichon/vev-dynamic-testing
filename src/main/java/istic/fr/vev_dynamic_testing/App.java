@@ -1,6 +1,7 @@
 package istic.fr.vev_dynamic_testing;
 
 
+import istic.fr.vev_dynamic_testing.loggers.ClassLogger;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;

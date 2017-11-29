@@ -20,7 +20,7 @@ public class Log {
 	private TYPE type;
 	private String message;
 	
-	Log(IO io, TYPE type,String message) {
+	public Log(IO io, TYPE type,String message) {
 		this.io = io;
 		this.type = type;
 		this.message = message;
