@@ -41,7 +41,11 @@ public class Logs {
 	}
 	
 	public void addLogs(String io, String type, String message) {
-		addLogs(new Log(Log.IO.valueOf(io), Log.TYPE.valueOf(type), message));
+		addLogs(new Log(io, type, message));
+	}
+
+	public void addLogs(String io, String type, String message, Object... args) {
+		addLogs(new Log(io, type, message).parameters(args));
 	}
 	
 	public List<Log> getLogs() {

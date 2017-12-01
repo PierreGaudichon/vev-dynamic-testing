@@ -1,13 +1,18 @@
 package istic.fr.vev_dynamic_testing;
 
 import com.google.gson.Gson;
+import org.apache.maven.shared.invoker.SystemOutHandler;
+
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class Log {
 
 	public enum IO {
 		BEGIN,
 		END,
-		DECLARING
+		DECLARING,
+		CALLING
 	}
 
 	public enum TYPE {
@@ -19,10 +24,17 @@ public class Log {
 	private IO io;
 	private TYPE type;
 	private String message;
+	private String parameters = "";
 	
 	public Log(IO io, TYPE type,String message) {
 		this.io = io;
 		this.type = type;
+		this.message = message;
+	}
+
+	public Log(String io, String type,String message) {
+		this.io = IO.valueOf(io);
+		this.type = TYPE.valueOf(type);
 		this.message = message;
 	}
 
@@ -38,8 +50,18 @@ public class Log {
 		return message;
 	}
 
+	public Log parameters(Object[] parameters) {
+		System.out.println(parameters);
+		return this;
+	}
+
+	private String paren(Object s) {
+		return "\"" + s + "\"";
+	}
+
 	public String toCallableType() {
-		return "\""+io+"\",\""+type+"\",\""+message+"\"";
+		return String.join(", ", paren(io), paren(type), paren(message));
+		// return String.join(", ", paren(io), paren(type), paren(message)) + ", $$";
 	}
 
 	public String toStatement() {
@@ -60,6 +82,10 @@ public class Log {
 
 	public boolean isDeclaringBlock() {
 		return (getIo() == IO.DECLARING) && (getType() == TYPE.BLOCK);
+	}
+
+	public boolean isCallingMethod() {
+		return (getIo() == IO.CALLING) && (getType() == TYPE.METHOD);
 	}
 
 }

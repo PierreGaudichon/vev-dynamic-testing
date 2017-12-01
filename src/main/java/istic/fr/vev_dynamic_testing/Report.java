@@ -29,6 +29,8 @@ public class Report {
             map.put(log.getMessage(), 0);
         });
         logs.stream().filter(log -> log.isBeginBlock()).forEach(log -> {
+            System.out.println(log.getMessage());
+            System.out.println(map.get(log.getMessage()));
             map.put(log.getMessage(), map.get(log.getMessage()) + 1);
         });
         return map;
@@ -36,7 +38,7 @@ public class Report {
 
     public List<String> methodCallSequence() {
         return logs.stream()
-                .filter(log -> log.isBeginMethod())
+                .filter(log -> log.isCallingMethod())
                 .map(Log::getMessage)
                 .collect(Collectors.toList());
     }
