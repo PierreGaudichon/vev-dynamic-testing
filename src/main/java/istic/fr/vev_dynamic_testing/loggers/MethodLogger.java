@@ -1,8 +1,11 @@
 package istic.fr.vev_dynamic_testing.loggers;
 
+import com.sun.crypto.provider.BlowfishKeyGenerator;
 import istic.fr.vev_dynamic_testing.Log;
 import istic.fr.vev_dynamic_testing.Logs;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.CtClass;
+import javassist.CtMethod;
 import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.compiler.CompileError;
@@ -57,24 +60,45 @@ public class MethodLogger implements CtXLogger {
         return jv.getBytecode();
     }
 
+    private void makeSingleBlockLogs(int i) throws CompileError, BadBytecode {
+        //System.out.println(getBlock(i));
+        //System.out.println(getBlock(i).index());
+        //System.out.println(isIfBLock(getBlock(i)));
+        if(!isIfBLock(getBlock(i))) {
+            String info = method.getLongName() + "," + getBlock(i).position() + "," + getBlock(i).length();
+            String before = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, info).toStatement();
+            String after = new Log(Log.IO.END, Log.TYPE.BLOCK, info).toStatement();
+            Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.BLOCK, info));
+            iterator.insertAt(getBlock(i).position(), getBytecode(before).get());
+            int position = getBlock(i).position() + getBlock(i).length() - 1;
+            iterator.insertAt(position, getBytecode(after).get());
+        }
+    }
+
+    private void handleTree() throws BadBytecode {
+        ControlFlow.Node[] nodes = new ControlFlow(method).dominatorTree();
+        ControlFlow.Node root = nodes[0];
+        System.out.println(root);
+        for (int i = 0; i < root.children(); i++) {
+            ControlFlow.Node node = root.child(i);
+            System.out.println(node);
+        }
+    }
+
     private void makeBlockLogs() throws BadBytecode, CompileError {
+        //System.out.println("---");
+        //handleTree();
         for(int i = 0; i < getBlocks().size(); i++) {
-            if(!isIfBLock(getBlock(i))) {
-                String info = method.getLongName()+","+getBlock(i).position()+","+getBlock(i).length();
-                String before = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, info).toStatement();
-                String after = new Log(Log.IO.END, Log.TYPE.BLOCK, info).toStatement();
-                Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.BLOCK, info));
-                iterator.insertAt(getBlock(i).position(), getBytecode(before).get());
-                int position = getBlock(i).position() + getBlock(i).length() - 1;
-                iterator.insertAt(position, getBytecode(after).get());
-            }
+            makeSingleBlockLogs(i);
         }
     }
 
     private void makeMethodLogs() throws CannotCompileException {
-        Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.METHOD, method.getLongName()));
-        method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, method.getLongName()).toStatement());
-        method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, method.getLongName()).toStatement());
+        String name = method.getLongName();
+        Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.METHOD, name));
+        method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, name).toStatement());
+        method.insertBefore(new Log(Log.IO.CALLING, Log.TYPE.METHOD, name).toStatement());
+        method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, name).toStatement());
     }
 
     public void makeLogs() {
