@@ -44,7 +44,7 @@ public class Logs {
 		addLogs(new Log(io, type, message));
 	}
 
-	public void addLogs(String io, String type, String message, Object... args) {
+	public void addLogs(String io, String type, String message, Object[] args) {
 		addLogs(new Log(io, type, message).parameters(args));
 	}
 	

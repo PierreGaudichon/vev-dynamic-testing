@@ -61,7 +61,7 @@ public class Log {
 
 	public String toCallableType() {
 		return String.join(", ", paren(io), paren(type), paren(message));
-		// return String.join(", ", paren(io), paren(type), paren(message)) + ", $$";
+		//return String.join(", ", paren(io), paren(type), paren(message)) + ", $args";
 	}
 
 	public String toStatement() {

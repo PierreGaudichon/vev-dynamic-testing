@@ -96,6 +96,8 @@ public class MethodLogger implements CtXLogger {
     private void makeMethodLogs() throws CannotCompileException {
         String name = method.getLongName();
         Logs.getInstance().addLogs(new Log(Log.IO.DECLARING, Log.TYPE.METHOD, name));
+        //List<AttributeInfo> attributes = info.getAttributes();
+        //attributes.forEach(attr -> System.out.println(attr.getName()));
         method.insertBefore(new Log(Log.IO.BEGIN, Log.TYPE.METHOD, name).toStatement());
         method.insertBefore(new Log(Log.IO.CALLING, Log.TYPE.METHOD, name).toStatement());
         method.insertAfter(new Log(Log.IO.END, Log.TYPE.METHOD, name).toStatement());
@@ -114,3 +116,5 @@ public class MethodLogger implements CtXLogger {
         }
     }
 }
+
+
