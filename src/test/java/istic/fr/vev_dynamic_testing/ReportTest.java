@@ -1,14 +1,14 @@
 package istic.fr.vev_dynamic_testing;
 
-import javassist.Loader;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.*;
 
 /* ----------------------------------------------------------------------------
         BOILERPLATE
@@ -18,6 +18,9 @@ import java.util.Map;
  * Unit test for simple App.
  */
 public class ReportTest extends TestCase {
+
+    // https://stackoverflow.com/a/1119559/3765413
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     /**
      * Create the test case
@@ -145,10 +148,26 @@ public class ReportTest extends TestCase {
                 new Log(Log.IO.CALLING, Log.TYPE.METHOD, "name")
         ));
         List<String> result = report.methodCallSequence();
-        System.out.println(result);
         List<String> expected = Arrays.asList("name", "name", "name");
         assertTrue(result.equals(expected));
     }
 
+    /* ------------------------------------------------------------------------
+        methodCallSequence
+     ----------------------------------------------------------------------- */
 
+    public void testPrintMap() {
+        System.setOut(new PrintStream(outContent));
+        Report.print(new HashMap<String, Integer>(){{
+            put("a", 1);
+            put("b", 2);
+        }});
+        assertEquals("a\n\t1\nb\n\t2\n", outContent.toString());
+    }
+
+    public void testPrintList() {
+        System.setOut(new PrintStream(outContent));
+        Report.print(Arrays.asList("a", "b"));
+        assertEquals("a\nb\n", outContent.toString());
+    }
 }
