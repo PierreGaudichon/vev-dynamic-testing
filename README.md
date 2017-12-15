@@ -71,3 +71,9 @@ A report describing the functionalities of your tool, what problem does it solve
 [Google Drive](https://docs.google.com/document/d/1Eq1y1_AFh_T2HYzo27jMtxkTGtQECQDQ8dcQJHb8dvY/edit?usp=sharing)
 (que en lecture, pas d'édit sur un repo github publique, envoyer un message pour avoir un accès en écriture)
 
+
+## TODO
+
+- Rapport
+  - liste d'intro, vérifier si tjr a jours
+  - finir intro (pt 3 et 4 du sujet)
