@@ -1,21 +1,26 @@
-package istic.fr.vev_dynamic_testing;
+package istic.fr.vev_dynamic_testing.loggers;
 
-import istic.fr.vev_dynamic_testing.loggers.MethodLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.framework.TestCase;
+import org.junit.Before;
 
-import istic.fr.vev_dynamic_testing.Log.IO;
-import istic.fr.vev_dynamic_testing.Log.TYPE;
-
-public class MethodLogerTest extends TestCase {
+public class ClassLogerTest extends TestCase {
+	
+	/**
+	 * méthode qui initialise le test
+	 */
+	@Before 
+	public void initialize() {
+		//empty= new ArrayList();
+	}
 	
 	/**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public MethodLogerTest( String testName ) {
+    public ClassLogerTest( String testName ) {
         super( testName );
     }
 
@@ -23,7 +28,7 @@ public class MethodLogerTest extends TestCase {
      * @return the suite of tests being tested
      */
     public static Test suite() {
-        return new TestSuite( MethodLogerTest.class );
+        return new TestSuite( ClassLogerTest.class );
     }
 
     /**
@@ -31,7 +36,6 @@ public class MethodLogerTest extends TestCase {
      */
     public void testConstructorLog() {
 
-        //MethodLogger m = new MethodLogger();
     }
 	
 }
