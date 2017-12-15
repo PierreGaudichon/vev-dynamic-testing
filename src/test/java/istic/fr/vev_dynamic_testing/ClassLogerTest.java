@@ -38,10 +38,7 @@ public class ClassLogerTest extends TestCase {
      * Test Constructor
      */
     public void testConstructorLog() {
-        
-    	Log l = new Log (IO.BEGIN,TYPE.METHOD,"b");
-    	
-    	assertTrue( l.getType().equals("a") );
+
     }
 	
 }

@@ -1,5 +1,6 @@
 package istic.fr.vev_dynamic_testing;
 
+import istic.fr.vev_dynamic_testing.loggers.MethodLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.framework.TestCase;
@@ -29,10 +30,8 @@ public class MethodLogerTest extends TestCase {
      * Test Constructor
      */
     public void testConstructorLog() {
-        
-    	Log l = new Log(IO.BEGIN,TYPE.BLOCK,"b");
-    	
-    	assertTrue( l.getType().equals("a") );
+
+        //MethodLogger m = new MethodLogger();
     }
 	
 }

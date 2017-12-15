@@ -32,7 +32,7 @@ public class Log {
 		this.message = message;
 	}
 
-	public Log(String io, String type,String message) {
+	public Log(String io, String type, String message) {
 		this.io = IO.valueOf(io);
 		this.type = TYPE.valueOf(type);
 		this.message = message;
