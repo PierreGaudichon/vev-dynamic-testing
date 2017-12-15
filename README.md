@@ -47,9 +47,9 @@ Lancer les tests du projet (sans lancer les tests du projet ressource) :
   + exécuter les tests programmatiquement ? -> fait
 - Ajouter des logs a chaque endroit important
   + method -> fait
-  + block -> en cours
+  + block -> *en cours*
   + constructor -> fait
-  + Faire un meilleur logger, pas System.out.println -> en cours
+  + Faire un meilleur logger, pas System.out.println -> Fait
   + Noter précisement l'endroit des logs.
 - Lire les logs pour générer un rapport
   + code coverage (par projet, classe, méthode)
@@ -60,3 +60,14 @@ Lancer les tests du projet (sans lancer les tests du projet ressource) :
 
 - https://stackoverflow.com/questions/12533588/changing-part-of-method-body-with-javassist
 - https://jboss-javassist.github.io/javassist/tutorial/tutorial3.html#intro
+
+
+## Rapport
+
+A report describing the functionalities of your tool, what problem does it solve, and both the relevence of the solution and its accuracy. A section about how you assessed this accuracy and test your tool overall is expected. You should also mention the problems you have encontered during the developpment and how you solved them. Guidelines concerning this report can be [can be found here](http://people.rennes.inria.fr/Benoit.Baudry/wp-content/uploads/2013/09/Instructions_for_report.pdf)
+
+(voir Instruction_for_report.pdf)
+
+[Google Drive](https://docs.google.com/document/d/1Eq1y1_AFh_T2HYzo27jMtxkTGtQECQDQ8dcQJHb8dvY/edit?usp=sharing)
+(que en lecture, pas d'édit sur un repo github publique, envoyer un message pour avoir un accès en écriture)
+
