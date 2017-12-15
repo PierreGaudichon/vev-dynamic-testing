@@ -21,7 +21,7 @@ public class LogTest extends TestCase {
      * @return the suite of tests being tested
      */
     public static Test suite() {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( LogTest.class );
     }
 
     /**
