@@ -28,9 +28,7 @@ public class Report {
         logs.stream().filter(Log::isDeclaringBlock).forEach(log -> {
             map.put(log.getMessage(), 0);
         });
-        logs.stream().filter(log -> log.isBeginBlock()).forEach(log -> {
-            System.out.println(log.getMessage());
-            System.out.println(map.get(log.getMessage()));
+        logs.stream().filter(Log::isBeginBlock).forEach(log -> {
             map.put(log.getMessage(), map.get(log.getMessage()) + 1);
         });
         return map;
