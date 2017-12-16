@@ -10,6 +10,6 @@ git clone https://github.com/apache/commons-cli.git
 
 
 # Build all project (should be maven projects).
-for project in examples/* ; do
-    ( cd $project && mvn clean install )
+for project in * ; do
+    ( cd $project && mvn install )
 done
