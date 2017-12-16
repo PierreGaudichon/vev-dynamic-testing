@@ -6,3 +6,5 @@ src/main/main.iml
 src/test/test.iml
 vev-dynamic-testing.iml
 out/
+
+examples/
