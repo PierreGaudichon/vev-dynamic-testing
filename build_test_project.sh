@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cd src/test/resources/Test1/
 mvn clean install
