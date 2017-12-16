@@ -55,12 +55,12 @@ public class App {
                 new File(TEST_PROJECT + "/target/test-classes").toURL(),
                 new File(TEST_PROJECT + "/target/classes").toURL()
         });
-        Class cc = testProjectLoader().loadClass(TEST_CLASS);
+        Class cc = classLoader.loadClass(TEST_CLASS);
         JUnitCore runner = new JUnitCore();
         runner.addListener(new TextListener(System.out));
         runner.run(cc);
     }
-    
+
     public static void printReports() {
         Logs l = Logs.getInstance();
         Report r = new Report(l.getLogs());
