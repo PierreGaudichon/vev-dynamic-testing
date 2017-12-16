@@ -28,20 +28,6 @@ public class App {
     // ctClass qui représente le logger
     private static CtClass logs = null;
 
-    public static ClassLoader testProjectLoader() throws MalformedURLException {
-        return new URLClassLoader(new URL[]{
-                new File(TEST_PROJECT + "/target/test-classes").toURL(),
-                new File(TEST_PROJECT + "/target/classes").toURL()
-        });
-    }
-
-    public static void runTest() throws MalformedURLException, ClassNotFoundException {
-        Class cc = testProjectLoader().loadClass(TEST_CLASS);
-        JUnitCore runner = new JUnitCore();
-        runner.addListener(new TextListener(System.out));
-        runner.run(cc);
-    }
-
     public static void buildProject() throws  IOException {
         Runtime.getRuntime().exec("./clone_and_build.sh");
     }
@@ -49,14 +35,14 @@ public class App {
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
-        
+
         // on compile la classe log dans le projet à tester
         // et on ajoute l'import pour pouvoir l'utiliser dans les tests
         logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
-    	//logs.writeFile(TEST_PROJECT+"/target/classes");
-    	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
-    	pool.importPackage("istic.fr.vev_dynamic_testing.Log");
-        
+        //logs.writeFile(TEST_PROJECT+"/target/classes");
+        pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
+        pool.importPackage("istic.fr.vev_dynamic_testing.Log");
+
         CtClass cc = pool.get(MAIN_CLASS);
         ClassLogger classLogger = new ClassLogger(cc, logs);
         classLogger.makeLogs();
@@ -64,6 +50,17 @@ public class App {
         cc.writeFile(TEST_PROJECT + "/target/classes");
     }
 
+    public static void runTest() throws MalformedURLException, ClassNotFoundException {
+        ClassLoader classLoader = new URLClassLoader(new URL[]{
+                new File(TEST_PROJECT + "/target/test-classes").toURL(),
+                new File(TEST_PROJECT + "/target/classes").toURL()
+        });
+        Class cc = testProjectLoader().loadClass(TEST_CLASS);
+        JUnitCore runner = new JUnitCore();
+        runner.addListener(new TextListener(System.out));
+        runner.run(cc);
+    }
+    
     public static void printReports() {
         Logs l = Logs.getInstance();
         Report r = new Report(l.getLogs());
