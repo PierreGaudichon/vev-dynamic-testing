@@ -7,6 +7,8 @@ VEV - Dynamic testing
 - Timothée Merlet-Thomazeau
 - Ahmed Nomane
 
+[![Build Status](https://travis-ci.org/PierreGaudichon/vev-dynamic-testing.svg?branch=master)](https://travis-ci.org/PierreGaudichon/vev-dynamic-testing)
+
 
 ## Deadlines
 
