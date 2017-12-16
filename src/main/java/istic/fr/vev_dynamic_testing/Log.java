@@ -50,10 +50,10 @@ public class Log {
 		return message;
 	}
 
-	public Log parameters(Object[] parameters) {
+	/*public Log parameters(Object[] parameters) {
 		System.out.println(parameters);
 		return this;
-	}
+	}*/
 
 	private String paren(Object s) {
 		return "\"" + s + "\"";
