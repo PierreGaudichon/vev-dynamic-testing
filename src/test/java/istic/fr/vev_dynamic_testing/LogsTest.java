@@ -57,8 +57,18 @@ public class LogsTest extends TestCase {
     	
     }
     
-    public void testC_Lol() {
-    	assertTrue(true);
+    public void testC_toString_empty() {
+        Logs l = Logs.getInstance();
+        assertEquals("[\n\n]", l.toString());
+    }
+
+    public void testC_toString_nonEmpty() {
+        Logs logs = Logs.getInstance();
+        Log logA = new Log(IO.BEGIN, TYPE.BLOCK, "nameA");
+        Log logB = new Log(IO.BEGIN, TYPE.BLOCK, "nameB");
+        logs.addLogs(logA);
+        logs.addLogs(logB);
+        assertEquals("[\n"+ logA.toString()+",\n"+logB.toString()+"\n]", logs.toString());
     }
 
 }
