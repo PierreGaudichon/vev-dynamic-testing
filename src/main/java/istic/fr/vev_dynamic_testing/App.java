@@ -43,7 +43,7 @@ public class App {
     }
 
     public static void buildProject() throws  IOException {
-        Runtime.getRuntime().exec("./build_test_project.sh");
+        Runtime.getRuntime().exec("./clone_and_build.sh");
     }
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
@@ -80,7 +80,7 @@ public class App {
         // Reset logs.
     	Logs.getInstance().removeLogs();
     	// Recompile target project
-        buildProject();
+        // buildProject();
     	// first step : modify the class byte-code
         modifyMain();
         //On lance JUnit sur la class de test
