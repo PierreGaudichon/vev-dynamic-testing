@@ -11,6 +11,10 @@ public class Logs {
 		List<String> ls = logs.stream().map(Log::toString).collect(Collectors.toList());
 		return "[\n" +String.join(",\n", ls) + "\n]";
 	}
+
+	public static String getClassifiedName() {
+		return "istic.fr.vev_dynamic_testing.Logs";
+	}
 	
 	// liste des logs
 	private List<Log> lesLogs;
@@ -55,4 +59,5 @@ public class Logs {
 	public String toString() {
 		return Logs.toString(getLogs());
 	}
+
 }

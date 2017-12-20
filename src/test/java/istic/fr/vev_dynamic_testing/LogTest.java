@@ -36,7 +36,7 @@ public class LogTest extends TestCase {
 
     public void testToStatement() {
         Log l = new Log(Log.IO.BEGIN, Log.TYPE.BLOCK, "name");
-        String expected = "Logs.getInstance().addLogs(\"BEGIN\", \"BLOCK\", \"name\");";
+        String expected = Logs.getClassifiedName()+".getInstance().addLogs(\"BEGIN\", \"BLOCK\", \"name\");";
         assertEquals(expected, l.toStatement());
     }
 

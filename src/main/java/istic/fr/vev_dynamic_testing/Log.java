@@ -65,7 +65,7 @@ public class Log {
 	}
 
 	public String toStatement() {
-		return "Logs.getInstance().addLogs("+toCallableType()+");";
+		return Logs.getClassifiedName()+".getInstance().addLogs("+toCallableType()+");";
 	}
 
 	public String toString() {
