@@ -29,7 +29,7 @@ public class App {
     public final static String TEST_PROJECT = "examples/Test1";
     public final static String PACKAGE_NAME = "istic.fr.prog_test";
     public final static String BUILD_COMMAND = "./build_test_project.sh";
-    
+
     /*// commons-cli
     public final static String TEST_PROJECT = "examples/commons-cli";
     public final static String PACKAGE_NAME = "org.apache.commons.cli";
@@ -79,10 +79,6 @@ public class App {
                 new File(TEST_PROJECT + "/target/test-classes").toURL(),
                 new File(TEST_PROJECT + "/target/classes").toURL()
         }, ClassLoader.getSystemClassLoader());
-        /*Class cc = classLoader.loadClass(TEST_CLASS);
-        JUnitCore runner = new JUnitCore();
-        runner.addListener(new TextListener(System.out));
-        runner.run(cc);*/
         JUnitCore runner = new JUnitCore();
         runner.addListener(new TextListener(System.out));
         for(String name : getJavaClassNames(TEST_PROJECT + "/src/test")) {
@@ -90,10 +86,6 @@ public class App {
         }
     }
 
-    /*public static void runTest() throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("cd examples/Test1 ; mvn surefire:test");
-        process.waitFor();
-    }*/
 
     public static void printReports() {
         Logs l = Logs.getInstance();
