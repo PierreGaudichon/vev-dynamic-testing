@@ -21,30 +21,36 @@ import java.net.URLClassLoader;
  */
 public class App {
 
-    public final static String TEST_PROJECT = "src/test/resources/Test1";
+    public final static String TEST_PROJECT = "examples/Test1";
     public final static String TEST_CLASS = "istic.fr.prog_test.PointTestNot";
     public final static String MAIN_CLASS = "istic.fr.prog_test.Point";
     
     // ctClass qui représente le logger
-    private static CtClass logs = null;
+    // private static CtClass logs = null;
 
-    public static void buildProject() throws  IOException {
-        Runtime.getRuntime().exec("./clone_and_build.sh");
+    public static void buildProject() throws IOException, InterruptedException {
+        Process process = Runtime.getRuntime().exec("./build_test_project.sh");
+        process.waitFor();
+        // Runtime.getRuntime().exec("./clone_and_build.sh");
     }
 
     public static void modifyMain() throws NotFoundException, IOException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
+        pool.appendClassPath("target/classes");
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
 
         // on compile la classe log dans le projet à tester
         // et on ajoute l'import pour pouvoir l'utiliser dans les tests
-        logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
+        //CtClass logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
         //logs.writeFile(TEST_PROJECT+"/target/classes");
-        pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
+        pool.importPackage("istic.fr.vev_dynamic_testing");
         pool.importPackage("istic.fr.vev_dynamic_testing.Log");
 
+        System.out.println(pool.find("Logs"));
+
         CtClass cc = pool.get(MAIN_CLASS);
-        ClassLogger classLogger = new ClassLogger(cc, logs);
+        // ClassLogger classLogger = new ClassLogger(cc, logs);
+        ClassLogger classLogger = new ClassLogger(cc, null);
         classLogger.makeLogs();
 
         cc.writeFile(TEST_PROJECT + "/target/classes");
@@ -61,6 +67,11 @@ public class App {
         runner.run(cc);
     }
 
+    /*public static void runTest() throws IOException, InterruptedException {
+        Process process = Runtime.getRuntime().exec("cd examples/Test1 ; mvn surefire:test");
+        process.waitFor();
+    }*/
+
     public static void printReports() {
         Logs l = Logs.getInstance();
         Report r = new Report(l.getLogs());
@@ -72,12 +83,11 @@ public class App {
         Report.print(r.methodCallSequence());
     }
 
-
-    public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException {
+    public static void main( String[] args ) throws NotFoundException, IOException, ClassNotFoundException, CannotCompileException, InterruptedException {
         // Reset logs.
     	Logs.getInstance().removeLogs();
     	// Recompile target project
-        // buildProject();
+        buildProject();
     	// first step : modify the class byte-code
         modifyMain();
         //On lance JUnit sur la class de test

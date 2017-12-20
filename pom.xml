@@ -64,6 +64,14 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <mainClass>istic.fr.vev_dynamic_testing.App</mainClass>
+        </configuration>
+      </plugin>
     </plugins>
 
   </build>
@@ -79,6 +87,7 @@
             <format>html</format>
             <format>xml</format>
           </formats>
+          <check/>
         </configuration>
       </plugin>
     </plugins>
