@@ -19,6 +19,9 @@ import java.net.URLClassLoader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import junit.framework.*;
+import org.junit.Test;
+
 /**
  * Hello world!
  *
@@ -82,6 +85,7 @@ public class App {
         JUnitCore runner = new JUnitCore();
         runner.addListener(new TextListener(System.out));
         for(String name : getJavaClassNames(TEST_PROJECT + "/src/test")) {
+        	System.out.println(classLoader.toString());
             runner.run(classLoader.loadClass(PACKAGE_NAME + "." + name));
         }
     }
