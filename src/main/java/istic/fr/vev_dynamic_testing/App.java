@@ -38,7 +38,7 @@ public class App {
     public final static String PACKAGE_NAME = "org.apache.commons.cli";
     public final static String BUILD_COMMAND = "./clone_and_build.sh";
     */
-
+    //TEST
     // ctClass qui représente le logger
     // private static CtClass logs = null;
 
