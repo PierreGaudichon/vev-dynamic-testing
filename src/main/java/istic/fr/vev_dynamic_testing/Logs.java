@@ -36,8 +36,9 @@ public class Logs {
 		return INSTANCE;
 	}
 	
-	public void removeLogs() {
+	public Logs removeLogs() {
 		lesLogs = new ArrayList<Log>();
+		return this;
 	}
 
 	public void addLogs(Log log) {
