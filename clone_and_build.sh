@@ -7,6 +7,7 @@ cd examples
 
 # Clone all the repo we want to test.
 git clone https://github.com/apache/commons-cli.git
+git clone https://github.com/apache/commons-math.git
 
 
 # Build all project (should be maven projects).
