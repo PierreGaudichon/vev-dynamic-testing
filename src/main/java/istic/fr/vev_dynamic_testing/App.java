@@ -19,29 +19,30 @@ import java.net.URLClassLoader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import junit.framework.*;
-import org.junit.Test;
-
 /**
  * Hello world!
  *
  */
 public class App {
 
-    // Test1 - Point
+    // Test1 - Point // Works
     public final static String TEST_PROJECT = "examples/Test1";
     public final static String PACKAGE_NAME = "istic.fr.prog_test";
     public final static String BUILD_COMMAND = "./build_test_project.sh";
 
-    /*// commons-cli
+    /*// commons-cli // Doesnt work
     public final static String TEST_PROJECT = "examples/commons-cli";
     public final static String PACKAGE_NAME = "org.apache.commons.cli";
     public final static String BUILD_COMMAND = "./clone_and_build.sh";
     */
-    //TEST
-    // ctClass qui représente le logger
-    // private static CtClass logs = null;
 
+    /* // commons-math // Doesnt work
+    public final static String TEST_PROJECT = "examples/commons-math";
+    public final static String PACKAGE_NAME = "org.apache.commons.math4";
+    public final static String BUILD_COMMAND = "./clone_and_build.sh";
+    */
+
+    
     public static List<String> getJavaClassNames(String folderPath) {
         File folder = new File(folderPath);
         String[] extentions = new String[] { "java" };
@@ -62,12 +63,9 @@ public class App {
         pool.appendClassPath("target/classes");
         pool.appendClassPath(TEST_PROJECT + "/target/classes");
 
-        // on compile la classe log dans le projet à tester
-        // et on ajoute l'import pour pouvoir l'utiliser dans les tests
-        //CtClass logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
-        //logs.writeFile(TEST_PROJECT+"/target/classes");
         pool.importPackage("istic.fr.vev_dynamic_testing");
         pool.importPackage("istic.fr.vev_dynamic_testing.Log");
+        pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
 
         for(String name : getJavaClassNames(TEST_PROJECT + "/src/main")) {
             CtClass cc = pool.get(PACKAGE_NAME + "." + name);
@@ -85,7 +83,6 @@ public class App {
         JUnitCore runner = new JUnitCore();
         runner.addListener(new TextListener(System.out));
         for(String name : getJavaClassNames(TEST_PROJECT + "/src/test")) {
-        	System.out.println(classLoader.toString());
             runner.run(classLoader.loadClass(PACKAGE_NAME + "." + name));
         }
     }
@@ -115,7 +112,5 @@ public class App {
         // on récupère les logs de l'exécution et on les affiche
         printReports();
     }
-
-
 
 }

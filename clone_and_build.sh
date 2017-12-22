@@ -12,5 +12,5 @@ git clone https://github.com/apache/commons-math.git
 
 # Build all project (should be maven projects).
 for project in * ; do
-    ( cd $project && mvn install )
+    ( cd $project && mvn clean install )
 done
