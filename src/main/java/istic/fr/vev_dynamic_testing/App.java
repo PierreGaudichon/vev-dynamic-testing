@@ -42,7 +42,7 @@ public class App {
     public final static String BUILD_COMMAND = "./clone_and_build.sh";
     */
 
-    
+
     public static List<String> getJavaClassNames(String folderPath) {
         File folder = new File(folderPath);
         String[] extentions = new String[] { "java" };

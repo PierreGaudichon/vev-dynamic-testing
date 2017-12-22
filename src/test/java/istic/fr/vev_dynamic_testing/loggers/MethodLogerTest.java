@@ -44,31 +44,36 @@ public class MethodLogerTest extends TestCase {
 
         //MethodLogger m = new MethodLogger();
     }
+
+    public CtClass genetarePointClass(ClassPool pool) throws NotFoundException, CannotCompileException {
+		pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
+		pool.importPackage("istic.fr.vev_dynamic_testing.Log");
+		CtClass STRING = pool.get("java.lang.String");
+
+		CtClass pointClass = pool.makeClass("Point");
+		CtField xField = new CtField(CtClass.intType,"X",pointClass);
+		CtField yField = new CtField(CtClass.intType,"Y",pointClass);
+		pointClass.addField(xField);
+		pointClass.addField(yField);
+		//pointClass.addConstructor(new CtConstructor(null, pointClass));
+		pointClass.addMethod(CtNewMethod.getter("getX", xField));
+		return pointClass;
+	}
     
     public void testMethod() throws CannotCompileException, NotFoundException, IOException {
-    	
-    	// on créé le pool et on récupère la classe
-    	ClassPool pool = ClassPool.getDefault();
-    	
-    	CtClass logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
-    	pool.importPackage("istic.fr.vev_dynamic_testing.Logs");
-    	pool.importPackage("istic.fr.vev_dynamic_testing.Log");
-    	CtClass STRING = pool.get("java.lang.String");
-    			
-    	CtClass pointClass = pool.makeClass("Point");
-    	CtField xField = new CtField(CtClass.intType,"X",pointClass);
-    	CtField yField = new CtField(CtClass.intType,"Y",pointClass);
-    	pointClass.addField(xField);
-    	pointClass.addField(yField);
-    	//pointClass.addConstructor(new CtConstructor(null, pointClass));
-    	pointClass.addMethod(CtNewMethod.getter("getX", xField));
+		// on créé le pool et on récupère la classe
+		ClassPool pool = ClassPool.getDefault();
+		CtClass pointClass = genetarePointClass(pool);
+		CtClass logs = pool.get("istic.fr.vev_dynamic_testing.Logs");
         
     	ClassLogger classLogger = new ClassLogger(pointClass, logs);
         classLogger.makeLogs();
-        
         pointClass.writeFile();
     }
 
+    public void testMethodWithCompileError() {
+
+	}
      
     public static void compare2File(String file1, String file2) {
 
