@@ -35,11 +35,12 @@ public class LogsTest extends TestCase {
      */
     public void testA_Length() {
     	
-    	Logs l = Logs.getInstance();
+    	Logs l = Logs.getInstance().removeLogs();
     	int i = l.getLogs().size();
     	l.addLogs("BEGIN","BLOCK", "b");
     	int j = l.getLogs().size();
-    	assertTrue( i == 0 && j == 1 );
+    	assertTrue(i == 0);
+    	assertTrue(j == 1);
     	
     }
     
