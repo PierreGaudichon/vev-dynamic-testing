@@ -75,16 +75,6 @@ public class MethodLogger implements CtXLogger {
         }
     }
 
-    private void handleTree() throws BadBytecode {
-        ControlFlow.Node[] nodes = new ControlFlow(method).dominatorTree();
-        ControlFlow.Node root = nodes[0];
-        System.out.println(root);
-        for (int i = 0; i < root.children(); i++) {
-            ControlFlow.Node node = root.child(i);
-            System.out.println(node);
-        }
-    }
-
     private void makeBlockLogs() throws BadBytecode, CompileError {
         //System.out.println("---");
         //handleTree();
